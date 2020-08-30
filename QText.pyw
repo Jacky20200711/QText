@@ -27,7 +27,7 @@ class QWindow(QWidget):
             # set MaximumSize to avoid screen become too big
             # if you do not this, you will get a warning
             self.setMaximumSize(1920, 1080) 
-            self.setGeometry(0, 40, width, height)
+            self.setGeometry(0, 40, width, int(height*0.92))
             
     def setQTextIcon(self):
         # iconPath is depend on yourself
