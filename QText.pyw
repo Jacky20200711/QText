@@ -452,7 +452,7 @@ class QText(QPlainTextEdit):
                 
             # save file
             elif event.key() == Qt.Key_S:
-                if not self.filePath:
+                if not self.filePath or self.filePath == 'QText':
                     self.filePath = QFileDialog.getSaveFileName(None, 
                         'Save File', 
                         'D:\\Desktop',
