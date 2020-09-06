@@ -56,6 +56,15 @@ pip install pygame-1.9.6-cp38-cp38-win_amd64.whl
 
 # 執行的結果1(編輯TXT檔)  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO1.PNG?raw=true)
-  
+&emsp;
+&emsp;
+&emsp;
 # 執行的結果2(執行PY檔)  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO2.PNG?raw=true)
+&emsp;
+&emsp;
+&emsp;
+# 執行的結果3(用來編輯其它檔案的按鈕)  
+![image](https://github.com/Jacky20200711/QText/blob/master/DEMO3.PNG?raw=true)
+&emsp;
+&emsp;
