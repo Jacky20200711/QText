@@ -17,7 +17,7 @@ F4 : 開啟網址(網址必須完整，並且必須獨佔一行)
 F5 : 執行自己(副檔名必須為py或pyw)  
 F10: 開啟設定檔(可以在此設定視窗大小、ICON路徑、按鈕的名稱和對應檔案的路徑)  
   
-Ctrl + F : 搜尋字串  
+Ctrl + F : 搜尋字串，若沒有搜尋到會跳出提示訊息  
 Ctrl + S : 儲存檔案  
 Ctrl + N : 開新檔案  
 Ctrl + C : 複製游標所在的那一行  
@@ -29,8 +29,8 @@ Alt + C  : 刪除游標之後的該行字元
 Alt + 1  : 將括號後的字元移到當前游標所在的空括號  
   
 Enter的效果  
-1.插入新行，游標自動與上一行的第1個字元對齊  
-2.如果上一行的最後有效字元(空白為無效字元)為':'，則游標還會進行縮進  
+1.插入新行，游標自動與上一行的第1個非空字元對齊  
+2.如果上一行的最後有效字元(空白為無效字元)為':'，則換行後會前進4格  
   
 Enter + shift : 效果如一般編輯器的Enter  
 
@@ -56,6 +56,15 @@ pip install pygame-1.9.6-cp38-cp38-win_amd64.whl
 
 # 執行的結果1(編輯TXT檔)  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO1.PNG?raw=true)
-  
-# 執行的結果2(執行PY檔)  
+&emsp;
+&emsp;
+&emsp;
+# 執行的結果2(執行PY檔)    
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO2.PNG?raw=true)
+&emsp;
+&emsp;
+&emsp;
+# 執行的結果3(開啟其它檔案的按鈕)  
+![image](https://github.com/Jacky20200711/QText/blob/master/DEMO3.PNG?raw=true)
+&emsp;
+&emsp;
