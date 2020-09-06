@@ -22,6 +22,8 @@ Ctrl + S : 儲存檔案
 Ctrl + N : 開新檔案  
 Ctrl + C : 複製游標所在的那一行  
 Ctrl + X : 剪下游標所在的那一行  
+Ctrl + ↑ : 讓APP的視窗占滿螢幕的上半部
+Ctrl + ↓ : 讓APP的視窗占滿螢幕的下半部
   
 Alt + W  : 關閉檔案  
 Alt + X  : 刪除游標之前的該行字元  
@@ -66,5 +68,10 @@ pip install pygame-1.9.6-cp38-cp38-win_amd64.whl
 &emsp;
 # 執行的結果3(用來編輯其它檔案的按鈕)  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO3.PNG?raw=true)
+&emsp;
+&emsp;
+&emsp;
+# 執行的結果4(方便比對兩個檔案的內容)  
+![image](https://github.com/Jacky20200711/QText/blob/master/DEMO4.PNG?raw=true)
 &emsp;
 &emsp;

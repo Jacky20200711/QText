@@ -19,11 +19,57 @@ class QWindow(QWidget):
         self.settingFile = 'SettingFile.txt'
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.getEachLineInSettingFile()
-        self.setScreen()
+        self.setScreenSize()
         self.setIcon()
         self.setAllQBton()
         self.setLineNumberToTheQLine(0)
         self.show()
+        
+    def setScreenToUpperHalf(self):
+        # get latest arguments from settingFile
+        self.getEachLineInSettingFile()
+        
+        # default arguments of screen
+        screen = QApplication.desktop().screenGeometry()
+        height = screen.height()
+        width =  screen.width()
+        screenUpperHalf = [0, 0, 1, 0.865]
+        
+        # try to update arguments from settingFile
+        for line in self.eachLineInSettingFile:
+            if line.startswith('screenToTopHalf'):
+                s = line.split(',')[1:]
+                for i in range(4):
+                    screenUpperHalf[i] = float(s[i])
+        
+        X = int(screenUpperHalf[0])
+        Y = int(screenUpperHalf[1]) + 45
+        W = int(screenUpperHalf[2]*width)
+        H = int(screenUpperHalf[3]*height) >> 1
+        self.setGeometry(X, Y, W, H)
+        
+    def setScreenToLowerHalf(self):
+        # get latest arguments from settingFile
+        self.getEachLineInSettingFile()
+        
+        # default arguments of screen
+        screen = QApplication.desktop().screenGeometry()
+        height = screen.height()
+        width =  screen.width()
+        screenLowerHalf = [0, 555, 1, 0.865]    
+        
+        # try to update arguments from settingFile
+        for line in self.eachLineInSettingFile:
+            if line.startswith('screenToBottomHalf'):
+                s = line.split(',')[1:]
+                for i in range(4):
+                    screenLowerHalf[i] = float(s[i])
+        
+        X = int(screenLowerHalf[0])
+        Y = int(screenLowerHalf[1])
+        W = int(screenLowerHalf[2]*width)
+        H = int(screenLowerHalf[3]*height) >> 1
+        self.setGeometry(X, Y, W, H)
         
     # The speed of open this app would be slow if you set all QLine when app start
     # so we just set one QLine when app start
@@ -47,7 +93,7 @@ class QWindow(QWidget):
         # set icon
         self.setWindowIcon(QIcon(iconPath))
         
-    def setScreen(self):
+    def setScreenSize(self):
         # get latest arguments from settingFile
         self.getEachLineInSettingFile()
         
@@ -153,7 +199,7 @@ class QWindow(QWidget):
     def keyPressEvent(self, event):
         # set size of screen
         if event.key() == Qt.Key_F2:
-            self.setScreen()
+            self.setScreenSize()
             
         # show or hide all QBton
         elif event.key() == Qt.Key_F1:
@@ -174,6 +220,8 @@ class QWindow(QWidget):
                     file.write('button,Unset,Unset\n')
                     file.write('screenLower,0.1,0.1,0.8,0.8\n')
                     file.write('screenUpper,0,0,1,0.917\n')
+                    file.write('screenToTopHalf,0,0,1,0.865\n')
+                    file.write('screenToBottomHalf,0,555,1,0.865\n')
                     file.write(r'iconPath,D:\Desktop\Project\QText\QText.ico'+'\n')
                 os.startfile(self.settingFile)
             else:
@@ -393,7 +441,15 @@ class QText(QPlainTextEdit):
                     self.setLineWrapMode(QPlainTextEdit.WidgetWidth)
                 # reverse the flag
                 self.wrapMode = not self.wrapMode
-                        
+            
+            # set Screen To UpperHalf 
+            elif event.key() == Qt.Key_Up:
+                self.parent.setScreenToUpperHalf()       
+                
+            # set Screen To LowerHalf 
+            elif event.key() == Qt.Key_Down:
+                self.parent.setScreenToLowerHalf() 
+                
             # save file
             elif event.key() == Qt.Key_S:
                 if not self.filePath:

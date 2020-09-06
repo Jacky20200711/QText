@@ -1,8 +1,0 @@
-button,Unset,Unset
-button,Unset,Unset
-button,Unset,Unset
-button,Unset,Unset
-button,Unset,Unset
-screenLower,0.1,0.1,0.8,0.8
-screenUpper,0,0,1,0.917
-iconPath,D:\Desktop\Project\QText\QText.ico
