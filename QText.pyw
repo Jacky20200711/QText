@@ -7,6 +7,7 @@ class QWindow(QWidget):
     def __init__(self):
         super(QWindow, self).__init__()
         self.setWindowTitle('QText')
+        self.maxLineNumber = 3001
         self.numOfQBton = 6
         self.push_btns = [QBton(self,i) for i in range(self.numOfQBton)]
         self.line_text = [QLine(self,i) for i in range(self.numOfQBton)]
@@ -18,10 +19,21 @@ class QWindow(QWidget):
         self.settingFile = 'SettingFile.txt'
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.getEachLineInSettingFile()
-        self.setIcon()
         self.setScreen()
+        self.setIcon()
         self.setAllQBton()
+        self.setLineNumberToTheQLine(0)
         self.show()
+        
+    # The speed of open this app would be slow if you set all QLine when app start
+    # so we just set one QLine when app start
+    def setLineNumberToTheQLine(self, index):
+        qline = self.line_text[index]
+        if not qline.getFlagOfSetLineNumber():
+            # set line_number and then move cursor to first line
+            [qline.insertPlainText('%5d\n'%i) for i in range(1,self.maxLineNumber)]
+            [qline.moveCursor(QTextCursor.Start)]
+            [qline.setFlagOfSetLineNumber(True)]
         
     def setIcon(self):
         # default iconPath
@@ -61,7 +73,7 @@ class QWindow(QWidget):
             # setMaximumSize can avoid screen become too big
             # if you do not this, you will get a warning
             X = int(screenUpper[0])
-            Y = int(screenUpper[1]) + 40
+            Y = int(screenUpper[1]) + 45
             W = int(screenUpper[2]*width)
             H = int(screenUpper[3]*height)
             self.setMaximumSize(width, height)
@@ -101,10 +113,12 @@ class QWindow(QWidget):
         if os.path.isfile(self.settingFile):
             try:
                 with open(self.settingFile, 'r', encoding='utf-8') as file:
-                    self.eachLineInSettingFile = file.read().split('\n')
+                    content = file.read().split('\n')
+                    self.eachLineInSettingFile = content
             except:
                 with open(self.settingFile, 'rb') as file:
-                    self.eachLineInSettingFile = file.read().decode('cp950', 'ignore').split('\n')
+                    content = file.read().decode('cp950', 'ignore').split('\n')
+                    self.eachLineInSettingFile = content
         
     def getAllQLine(self):
         return self.line_text
@@ -195,14 +209,18 @@ class QBton(QPushButton):
     def setName(self, name):
         self.name = name
         self.setText(name)
-        
+    
     def mousePressEvent(self, event):
         # get the latest setting of all QBton
         self.parent.setAllQBton()
         
         # check whether the btn has path-setting 
         if self.filePath == 'Unset':
-            QMessageBox.warning(self.parent, 'Message', 'The setting of the button is incorrect.')
+            QMessageBox.warning(
+                self.parent, 
+                'Message', 
+                'The setting of the button is incorrect.'
+            )
             return
             
         # hide QLine and QText of other index
@@ -213,7 +231,11 @@ class QBton(QPushButton):
         self.parent.showTheQLine(self.index)
         self.parent.showTheQText(self.index)
         
-        # update WindowTitle and focus and QTextFilePath
+        # set lineNumber of the QLine
+        # set filePath of the QText
+        # set focus on the QText
+        # set WindowTitle 
+        self.parent.setLineNumberToTheQLine(self.index)
         self.parent.getTheQText(self.index).setFilePath(self.getPath())
         self.parent.getTheQText(self.index).setFocus()
         self.parent.setWindowTitle(self.filePath)
@@ -237,15 +259,19 @@ class QLine(QPlainTextEdit):
         self.verticalScrollBar().setEnabled(False)
         self.setFont(QFont('consolas', 14, 0, False))
         self.setReadOnly(True)
+        self.hasSetLineNumber = False
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setStyleSheet((
             'color: #552a07;'
             'background-color: #FFFF99;'
             'border:1px solid black;')
         )
-        # set line_number and then move cursor to first line
-        [self.insertPlainText('%5d\n'%i) for i in range(1,2001)]
-        self.moveCursor(QTextCursor.Start)
+        
+    def getFlagOfSetLineNumber(self):
+        return self.hasSetLineNumber
+        
+    def setFlagOfSetLineNumber(self, flag):
+        self.hasSetLineNumber = flag
                 
 class QText(QPlainTextEdit):
     def __init__(self, parent, index):
@@ -297,7 +323,7 @@ class QText(QPlainTextEdit):
             cursor.deleteChar()    # delete the empty line 
             self.moveCursor(QTextCursor.Up)
             self.moveCursor(QTextCursor.EndOfLine)
-                    
+                
         # open website
         elif event.key() == Qt.Key_F4:
             cursor = self.textCursor()
@@ -391,16 +417,20 @@ class QText(QPlainTextEdit):
                 
             # search string
             elif event.key() == Qt.Key_F:
-                text, ok = QInputDialog.getText(
+                text, clickOk = QInputDialog.getText(
                     self.parent,
                     'Search String', 
                     '<h3>Input</h3>', 
                     QLineEdit.Normal
                 )
-                if text and ok:
+                if text and clickOk:
                     self.pattern = text
                     if not self.find(self.pattern):
-                        QMessageBox.warning(self.parent, 'Message', 'Can\'t find the string...')
+                        QMessageBox.warning(
+                            self.parent, 
+                            'Message', 
+                            'Can\'t find the string...'
+                        )
                 
             # copy the line
             elif event.key() == Qt.Key_C:
@@ -518,7 +548,9 @@ class QText(QPlainTextEdit):
             QPlainTextEdit.keyPressEvent(self, event)
         
         # synchronize line_number with KeyEvent
-        self.parent.getTheQLine(self.index).verticalScrollBar().setValue(self.verticalScrollBar().value())
+        self.parent.getTheQLine(self.index).verticalScrollBar().setValue(
+            self.verticalScrollBar().value()
+        )
 
 class QHigh(QSyntaxHighlighter):
     def __init__(self, document):
