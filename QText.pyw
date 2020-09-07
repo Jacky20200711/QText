@@ -15,8 +15,12 @@ class QWindow(QWidget):
         self.highlight = [QHigh(QText.document()) for QText in self.main_text]
         self.showAllQBton = True
         self.isFullScreen = False
+        self.screenUpperHalf = [0, 0, 1, 0.865]
+        self.screenLowerHalf = [0, 555, 1, 0.865]
+        self.screenLower = [0.1, 0.1, 0.8, 0.8]
+        self.screenUpper = [0, 0, 1, 0.917]    
         self.eachLineInSettingFile = []
-        self.settingFile = 'SettingFile.txt'
+        self.settingFile = os.path.split(sys.argv[0])[0] + '\\SettingFile.txt'
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.getEachLineInSettingFile()
         self.setScreenSize()
@@ -24,6 +28,43 @@ class QWindow(QWidget):
         self.setAllQBton()
         self.setLineNumberToTheQLine(0)
         self.show()
+        
+    def setScreenSize(self):
+        # get latest arguments from settingFile
+        self.getEachLineInSettingFile()
+        
+        # default arguments of screen
+        screen = QApplication.desktop().screenGeometry()
+        height = screen.height()
+        width =  screen.width()
+        
+        # try to update arguments from settingFile
+        for line in self.eachLineInSettingFile:
+            if line.startswith('screenLower'):
+                s = line.split(',')[1:]
+                for i in range(4):
+                    self.screenLower[i] = float(s[i])
+            elif line.startswith('screenUpper'):
+                s = line.split(',')[1:]
+                for i in range(4):
+                    self.screenUpper[i] = float(s[i])
+        
+        if self.isFullScreen:
+            # setMaximumSize can avoid screen become too big
+            # if you do not this, you will get a warning
+            X = int(self.screenUpper[0])
+            Y = int(self.screenUpper[1]) + 45
+            W = int(self.screenUpper[2]*width)
+            H = int(self.screenUpper[3]*height)
+            self.setGeometry(X, Y, W, H)
+        else:
+            X = int(self.screenLower[0] * width)
+            Y = int(self.screenLower[1] * height)
+            W = int(self.screenLower[2] * width)
+            H = int(self.screenLower[3] * height)
+            self.setGeometry(X, Y, W, H)
+            
+        self.isFullScreen = not self.isFullScreen
         
     def setScreenToUpperHalf(self):
         # get latest arguments from settingFile
@@ -33,19 +74,18 @@ class QWindow(QWidget):
         screen = QApplication.desktop().screenGeometry()
         height = screen.height()
         width =  screen.width()
-        screenUpperHalf = [0, 0, 1, 0.865]
         
         # try to update arguments from settingFile
         for line in self.eachLineInSettingFile:
             if line.startswith('screenToTopHalf'):
                 s = line.split(',')[1:]
                 for i in range(4):
-                    screenUpperHalf[i] = float(s[i])
+                    self.screenUpperHalf[i] = float(s[i])
         
-        X = int(screenUpperHalf[0])
-        Y = int(screenUpperHalf[1]) + 45
-        W = int(screenUpperHalf[2]*width)
-        H = int(screenUpperHalf[3]*height) >> 1
+        X = int(self.screenUpperHalf[0])
+        Y = int(self.screenUpperHalf[1]) + 45
+        W = int(self.screenUpperHalf[2]*width)
+        H = int(self.screenUpperHalf[3]*height) >> 1
         self.setGeometry(X, Y, W, H)
         
     def setScreenToLowerHalf(self):
@@ -56,19 +96,18 @@ class QWindow(QWidget):
         screen = QApplication.desktop().screenGeometry()
         height = screen.height()
         width =  screen.width()
-        screenLowerHalf = [0, 555, 1, 0.865]    
         
         # try to update arguments from settingFile
         for line in self.eachLineInSettingFile:
             if line.startswith('screenToBottomHalf'):
                 s = line.split(',')[1:]
                 for i in range(4):
-                    screenLowerHalf[i] = float(s[i])
+                    self.screenLowerHalf[i] = float(s[i])
         
-        X = int(screenLowerHalf[0])
-        Y = int(screenLowerHalf[1])
-        W = int(screenLowerHalf[2]*width)
-        H = int(screenLowerHalf[3]*height) >> 1
+        X = int(self.screenLowerHalf[0])
+        Y = int(self.screenLowerHalf[1])
+        W = int(self.screenLowerHalf[2]*width)
+        H = int(self.screenLowerHalf[3]*height) >> 1
         self.setGeometry(X, Y, W, H)
         
     # The speed of open this app would be slow if you set all QLine when app start
@@ -92,46 +131,6 @@ class QWindow(QWidget):
                 
         # set icon
         self.setWindowIcon(QIcon(iconPath))
-        
-    def setScreenSize(self):
-        # get latest arguments from settingFile
-        self.getEachLineInSettingFile()
-        
-        # default arguments of screen
-        screen = QApplication.desktop().screenGeometry()
-        height = screen.height()
-        width =  screen.width()
-        screenLower = [0.1, 0.1, 0.8, 0.8]
-        screenUpper = [0, 0, 1, 0.917]    
-        
-        # try to update arguments from settingFile
-        for line in self.eachLineInSettingFile:
-            if line.startswith('screenLower'):
-                s = line.split(',')[1:]
-                for i in range(4):
-                    screenLower[i] = float(s[i])
-            elif line.startswith('screenUpper'):
-                s = line.split(',')[1:]
-                for i in range(4):
-                    screenUpper[i] = float(s[i])
-        
-        if self.isFullScreen:
-            # setMaximumSize can avoid screen become too big
-            # if you do not this, you will get a warning
-            X = int(screenUpper[0])
-            Y = int(screenUpper[1]) + 45
-            W = int(screenUpper[2]*width)
-            H = int(screenUpper[3]*height)
-            self.setMaximumSize(width, height)
-            self.setGeometry(X, Y, W, H)
-        else:
-            X = int(width  * screenLower[0])
-            Y = int(height * screenLower[1])
-            W = int(width  * screenLower[2])
-            H = int(height * screenLower[3])
-            self.setGeometry(X, Y, W, H)
-            
-        self.isFullScreen = not self.isFullScreen
         
     def setAllQBton(self):
         # get latest arguments from settingFile
