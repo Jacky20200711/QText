@@ -6,6 +6,18 @@ from PyQt5.QtWidgets import *
 class QWindow(QWidget):
     def __init__(self):
         super(QWindow, self).__init__()
+        self.defaultContentOfSettingFile = \
+            'button,Unset,Unset\n'+ \
+            'button,Unset,Unset\n'+ \
+            'button,Unset,Unset\n'+ \
+            'button,Unset,Unset\n'+ \
+            'button,Unset,Unset\n'+ \
+            'screenLower,0.1,0.1,0.8,0.8\n'+ \
+            'screenUpper,0,0,1,0.917\n'+ \
+            'screenToTopHalf,0,0,1,0.865\n'+ \
+            'screenToBottomHalf,0,555,1,0.865\n'+ \
+           r'iconPath,D:\Desktop\Project\QText\QText.ico'+'\n'
+                                    
         self.setWindowTitle('QText')
         self.maxLineNumber = 3001
         self.numOfQBton = 6
@@ -28,6 +40,11 @@ class QWindow(QWidget):
         self.setAllQBton()
         self.setLineNumberToTheQLine(0)
         self.show()
+        
+    def resetSettingFile(self):
+        if os.path.isfile(self.settingFile):
+            with open(self.settingFile, 'w+') as file:
+                file.write(self.defaultContentOfSettingFile)
         
     def setScreenSize(self):
         # get latest arguments from settingFile
@@ -212,16 +229,7 @@ class QWindow(QWidget):
         elif event.key() == Qt.Key_F10:
             if not os.path.isfile(self.settingFile):
                 with open(self.settingFile, 'w+') as file:
-                    file.write('button,Unset,Unset\n')
-                    file.write('button,Unset,Unset\n')
-                    file.write('button,Unset,Unset\n')
-                    file.write('button,Unset,Unset\n')
-                    file.write('button,Unset,Unset\n')
-                    file.write('screenLower,0.1,0.1,0.8,0.8\n')
-                    file.write('screenUpper,0,0,1,0.917\n')
-                    file.write('screenToTopHalf,0,0,1,0.865\n')
-                    file.write('screenToBottomHalf,0,555,1,0.865\n')
-                    file.write(r'iconPath,D:\Desktop\Project\QText\QText.ico'+'\n')
+                    file.write(self.defaultContentOfSettingFile)
                 os.startfile(self.settingFile)
             else:
                 os.startfile(self.settingFile)
@@ -441,6 +449,10 @@ class QText(QPlainTextEdit):
                 # reverse the flag
                 self.wrapMode = not self.wrapMode
             
+            # reset settingFile
+            elif event.key() == Qt.Key_F10:
+                self.parent.resetSettingFile() 
+                
             # set Screen To UpperHalf 
             elif event.key() == Qt.Key_Up:
                 self.parent.setScreenToUpperHalf()       
