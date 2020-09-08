@@ -150,11 +150,13 @@ class QWindow(QWidget):
         self.setWindowIcon(QIcon(iconPath))
         
     def setAllQBton(self):
+        # set QBton of the index = 0
+        self.push_btns[0].setPath(self.main_text[0].getFilePath())
+            
         # get latest arguments from settingFile
         self.getEachLineInSettingFile()
         
-        # do not set first button which is default new main_text
-        # we start to set QBton from index = 1
+        # set QBton from index = 1
         index = 1
         for line in self.eachLineInSettingFile:
             if line.startswith('button'):
@@ -349,6 +351,9 @@ class QText(QPlainTextEdit):
         self.verticalScrollBar().valueChanged.connect(
             self.parent.getTheQLine(self.index).verticalScrollBar().setValue
         )
+    
+    def getFilePath(self):
+        return self.filePath
     
     def setFilePath(self, filePath):
         self.filePath = filePath
