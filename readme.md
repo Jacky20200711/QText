@@ -25,6 +25,8 @@ Ctrl + C : 複製游標所在的那一行
 Ctrl + X : 剪下游標所在的那一行  
 Ctrl + ↑ : 讓APP的視窗占滿螢幕的上半部  
 Ctrl + ↓ : 讓APP的視窗占滿螢幕的下半部    
+Ctrl + ← : 讓APP的視窗占滿螢幕的左半部  
+Ctrl + → : 讓APP的視窗占滿螢幕的右半部  
 Ctrl + F10 : 將設定檔恢復成預設值    
   
 Alt + W  : 關閉檔案  
@@ -73,7 +75,12 @@ pip install pygame-1.9.6-cp38-cp38-win_amd64.whl
 &emsp;
 &emsp;
 &emsp;
-# 執行的結果4(方便比對兩個檔案的內容)  
+# 執行的結果4(方便上下比對兩個檔案的內容)  
+![image](https://github.com/Jacky20200711/QText/blob/master/DEMO4.PNG?raw=true)
+&emsp;
+&emsp;
+&emsp;
+# 執行的結果5(方便左右比對兩個檔案的內容)   
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO4.PNG?raw=true)
 &emsp;
 &emsp;

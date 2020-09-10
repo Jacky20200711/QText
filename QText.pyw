@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import *
 class QWindow(QWidget):
     def __init__(self):
         super(QWindow, self).__init__()
+        self.settingFile = os.path.split(sys.argv[0])[0] + '\\SettingFile.txt'
         self.defaultContentOfSettingFile = \
             'button,Unset,Unset\n'+ \
             'button,Unset,Unset\n'+ \
@@ -13,32 +14,31 @@ class QWindow(QWidget):
             'button,Unset,Unset\n'+ \
             'button,Unset,Unset\n'+ \
             'screenLower,0.1,0.1,0.8,0.8\n'+ \
-            'screenUpper,0,0,1,0.917\n'+ \
-            'screenToTopHalf,0,0,1,0.865\n'+ \
+            'screenUpper,0,45,1,0.917\n'+ \
+            'screenToTopHalf,0,45,1,0.865\n'+ \
             'screenToBottomHalf,0,555,1,0.865\n'+ \
            r'iconPath,D:\Desktop\Project\QText\QText.ico'+'\n'
                                     
         self.setWindowTitle('QText')
-        self.maxLineNumber = 3001
         self.numOfQBton = 6
-        self.push_btns = [QBton(self,i) for i in range(self.numOfQBton)]
-        self.line_text = [QLine(self,i) for i in range(self.numOfQBton)]
-        self.main_text = [QText(self,i) for i in range(self.numOfQBton)]
-        self.highlight = [QHigh(QText.document()) for QText in self.main_text]
+        self.QBtonList = [QBton(self,i) for i in range(self.numOfQBton)]
+        self.QLineList = [QLine(self,i) for i in range(self.numOfQBton)]
+        self.QTextList = [QText(self,i) for i in range(self.numOfQBton)]
+        self.highlight = [QHigh(QText.document()) for QText in self.QTextList]
         self.showAllQBton = True
         self.isFullScreen = False
-        self.screenUpperHalf = [0, 0, 1, 0.865]
+        self.screenSize = QApplication.desktop().screenGeometry()
+        self.screenUpperHalf = [0, 45, 1, 0.865]
         self.screenLowerHalf = [0, 555, 1, 0.865]
         self.screenLower = [0.1, 0.1, 0.8, 0.8]
-        self.screenUpper = [0, 0, 1, 0.917]    
+        self.screenUpper = [0, 45, 1, 0.917]
         self.eachLineInSettingFile = []
-        self.settingFile = os.path.split(sys.argv[0])[0] + '\\SettingFile.txt'
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.getEachLineInSettingFile()
         self.setScreenSize()
         self.setIcon()
-        self.setAllQBton()
-        self.setLineNumberToTheQLine(0)
+        self.setNameAndPathToAllQBton()
+        self.QLineList[0].setLineNumber()
         self.show()
         
     def resetSettingFile(self):
@@ -49,11 +49,6 @@ class QWindow(QWidget):
     def setScreenSize(self):
         # get latest arguments from settingFile
         self.getEachLineInSettingFile()
-        
-        # default arguments of screen
-        screen = QApplication.desktop().screenGeometry()
-        height = screen.height()
-        width =  screen.width()
         
         # try to update arguments from settingFile
         for line in self.eachLineInSettingFile:
@@ -68,17 +63,16 @@ class QWindow(QWidget):
         
         if self.isFullScreen:
             # setMaximumSize can avoid screen become too big
-            # if you do not this, you will get a warning
             X = int(self.screenUpper[0])
-            Y = int(self.screenUpper[1]) + 45
-            W = int(self.screenUpper[2]*width)
-            H = int(self.screenUpper[3]*height)
+            Y = int(self.screenUpper[1])
+            W = int(self.screenUpper[2] * self.screenSize.width())
+            H = int(self.screenUpper[3] * self.screenSize.height())
             self.setGeometry(X, Y, W, H)
         else:
-            X = int(self.screenLower[0] * width)
-            Y = int(self.screenLower[1] * height)
-            W = int(self.screenLower[2] * width)
-            H = int(self.screenLower[3] * height)
+            X = int(self.screenLower[0] * self.screenSize.width())
+            Y = int(self.screenLower[1] * self.screenSize.height())
+            W = int(self.screenLower[2] * self.screenSize.width())
+            H = int(self.screenLower[3] * self.screenSize.height())
             self.setGeometry(X, Y, W, H)
             
         self.isFullScreen = not self.isFullScreen
@@ -86,11 +80,6 @@ class QWindow(QWidget):
     def setScreenToUpperHalf(self):
         # get latest arguments from settingFile
         self.getEachLineInSettingFile()
-        
-        # default arguments of screen
-        screen = QApplication.desktop().screenGeometry()
-        height = screen.height()
-        width =  screen.width()
         
         # try to update arguments from settingFile
         for line in self.eachLineInSettingFile:
@@ -100,19 +89,14 @@ class QWindow(QWidget):
                     self.screenUpperHalf[i] = float(s[i])
         
         X = int(self.screenUpperHalf[0])
-        Y = int(self.screenUpperHalf[1]) + 45
-        W = int(self.screenUpperHalf[2]*width)
-        H = int(self.screenUpperHalf[3]*height) >> 1
+        Y = int(self.screenUpperHalf[1])
+        W = int(self.screenUpperHalf[2] * self.screenSize.width())
+        H = int(self.screenUpperHalf[3] * self.screenSize.height()) >> 1
         self.setGeometry(X, Y, W, H)
         
     def setScreenToLowerHalf(self):
         # get latest arguments from settingFile
         self.getEachLineInSettingFile()
-        
-        # default arguments of screen
-        screen = QApplication.desktop().screenGeometry()
-        height = screen.height()
-        width =  screen.width()
         
         # try to update arguments from settingFile
         for line in self.eachLineInSettingFile:
@@ -123,19 +107,43 @@ class QWindow(QWidget):
         
         X = int(self.screenLowerHalf[0])
         Y = int(self.screenLowerHalf[1])
-        W = int(self.screenLowerHalf[2]*width)
-        H = int(self.screenLowerHalf[3]*height) >> 1
+        W = int(self.screenLowerHalf[2] * self.screenSize.width())
+        H = int(self.screenLowerHalf[3] * self.screenSize.height()) >> 1
         self.setGeometry(X, Y, W, H)
         
-    # The speed of open this app would be slow if you set all QLine when app start
-    # so we just set one QLine when app start
-    def setLineNumberToTheQLine(self, index):
-        qline = self.line_text[index]
-        if not qline.getFlagOfSetLineNumber():
-            # set line_number and then move cursor to first line
-            [qline.insertPlainText('%5d\n'%i) for i in range(1,self.maxLineNumber)]
-            [qline.moveCursor(QTextCursor.Start)]
-            [qline.setFlagOfSetLineNumber(True)]
+    def setScreenToRightHalf(self):
+        # get latest arguments from settingFile
+        self.getEachLineInSettingFile()
+        
+        # try to update arguments from settingFile
+        for line in self.eachLineInSettingFile:
+            if line.startswith('screenUpper'):
+                s = line.split(',')[1:]
+                for i in range(4):
+                    self.screenUpper[i] = float(s[i])
+        
+        X = int(self.screenUpper[0]) + (self.screenSize.width() >> 1)
+        Y = int(self.screenUpper[1])
+        W = int(self.screenUpper[2] * self.screenSize.width()) >> 1
+        H = int(self.screenUpper[3] * self.screenSize.height()) 
+        self.setGeometry(X, Y, W, H)
+    
+    def setScreenToLeftHalf(self):
+        # get latest arguments from settingFile
+        self.getEachLineInSettingFile()
+        
+        # try to update arguments from settingFile
+        for line in self.eachLineInSettingFile:
+            if line.startswith('screenUpper'):
+                s = line.split(',')[1:]
+                for i in range(4):
+                    self.screenUpper[i] = float(s[i])
+        
+        X = int(self.screenUpper[0])
+        Y = int(self.screenUpper[1])
+        W = int(self.screenUpper[2] * self.screenSize.width()) >> 1
+        H = int(self.screenUpper[3] * self.screenSize.height()) 
+        self.setGeometry(X, Y, W, H)
         
     def setIcon(self):
         # default iconPath
@@ -149,9 +157,9 @@ class QWindow(QWidget):
         # set icon
         self.setWindowIcon(QIcon(iconPath))
         
-    def setAllQBton(self):
+    def setNameAndPathToAllQBton(self):
         # set QBton of the index = 0
-        self.push_btns[0].setPath(self.main_text[0].getFilePath())
+        self.QBtonList[0].setPath(self.QTextList[0].getFilePath())
             
         # get latest arguments from settingFile
         self.getEachLineInSettingFile()
@@ -163,11 +171,11 @@ class QWindow(QWidget):
                 btnSettingData = line.split(',')
                 # set filePath and name to each button if path is valid
                 if os.path.isfile(btnSettingData[2]):
-                    self.push_btns[index].setName(btnSettingData[1])
-                    self.push_btns[index].setPath(btnSettingData[2])
+                    self.QBtonList[index].setName(btnSettingData[1])
+                    self.QBtonList[index].setPath(btnSettingData[2])
                 else:
-                    self.push_btns[index].setName('Unset')
-                    self.push_btns[index].setPath('Unset')
+                    self.QBtonList[index].setName('Unset')
+                    self.QBtonList[index].setPath('Unset')
                 index += 1
             # support at most 5 QBton 
             if index == 6:
@@ -185,34 +193,34 @@ class QWindow(QWidget):
                     self.eachLineInSettingFile = content
         
     def getAllQLine(self):
-        return self.line_text
+        return self.QLineList
     
     def getAllQText(self):
-        return self.main_text
+        return self.QTextList
     
     def getAllQBton(self):
-        return self.push_btns
+        return self.QBtonList
         
     def getTheQText(self, index):
-        return self.main_text[index]
+        return self.QTextList[index]
     
     def getTheQLine(self, index):
-        return self.line_text[index]
+        return self.QLineList[index]
         
     def getNumOfQBton(self):    
         return self.numOfQBton
         
     def showTheQText(self, index):
-        self.main_text[index].show()
+        self.QTextList[index].show()
         
     def showTheQLine(self, index):
-        self.line_text[index].show()
+        self.QLineList[index].show()
         
     def hideOtherQText(self, index):
-        [self.main_text[i].hide() for i in range(self.numOfQBton) if i != index]    
+        [self.QTextList[i].hide() for i in range(self.numOfQBton) if i != index]    
         
     def hideOtherQLine(self, index):
-        [self.line_text[i].hide() for i in range(self.numOfQBton) if i != index]
+        [self.QLineList[i].hide() for i in range(self.numOfQBton) if i != index]
     
     def keyPressEvent(self, event):
         # set size of screen
@@ -222,9 +230,9 @@ class QWindow(QWidget):
         # show or hide all QBton
         elif event.key() == Qt.Key_F1:
             if self.showAllQBton:
-                [b.show() for b in self.push_btns]
+                [b.show() for b in self.QBtonList]
             else:
-                [b.hide() for b in self.push_btns]
+                [b.hide() for b in self.QBtonList]
             self.showAllQBton = not self.showAllQBton
             
         # create or open the settingFile
@@ -269,7 +277,7 @@ class QBton(QPushButton):
     
     def mousePressEvent(self, event):
         # get the latest setting of all QBton
-        self.parent.setAllQBton()
+        self.parent.setNameAndPathToAllQBton()
         
         # check whether the btn has path-setting 
         if self.filePath == 'Unset':
@@ -292,7 +300,7 @@ class QBton(QPushButton):
         # set filePath of the QText
         # set focus on the QText
         # set WindowTitle 
-        self.parent.setLineNumberToTheQLine(self.index)
+        self.parent.QLineList[self.index].setLineNumber()
         self.parent.getTheQText(self.index).setFilePath(self.getPath())
         self.parent.getTheQText(self.index).setFocus()
         self.parent.setWindowTitle(self.filePath)
@@ -316,6 +324,7 @@ class QLine(QPlainTextEdit):
         self.verticalScrollBar().setEnabled(False)
         self.setFont(QFont('consolas', 14, 0, False))
         self.setReadOnly(True)
+        self.maxLineNumber = 3001
         self.hasSetLineNumber = False
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setStyleSheet((
@@ -323,12 +332,15 @@ class QLine(QPlainTextEdit):
             'background-color: #FFFF99;'
             'border:1px solid black;')
         )
-        
-    def getFlagOfSetLineNumber(self):
-        return self.hasSetLineNumber
-        
-    def setFlagOfSetLineNumber(self, flag):
-        self.hasSetLineNumber = flag
+    
+    # The speed of open this app would be slow if you set all QLine at first
+    # Just set the first QLine when app start and set other QLine when other QBton is clicked
+    def setLineNumber(self):
+        if not self.hasSetLineNumber:
+            self.hasSetLineNumber = True
+            # set line_number and then move cursor to first line
+            [self.insertPlainText('%5d\n'%i) for i in range(1, self.maxLineNumber)]
+            [self.moveCursor(QTextCursor.Start)]
                 
 class QText(QPlainTextEdit):
     def __init__(self, parent, index):
@@ -347,7 +359,7 @@ class QText(QPlainTextEdit):
             'background-color: black;'
             'border:1px solid black;')
         )
-        # synchronize line_number with Vbar_value of main_text 
+        # synchronize line_number with Vbar_value of QTextList 
         self.verticalScrollBar().valueChanged.connect(
             self.parent.getTheQLine(self.index).verticalScrollBar().setValue
         )
@@ -465,6 +477,14 @@ class QText(QPlainTextEdit):
             # set Screen To LowerHalf 
             elif event.key() == Qt.Key_Down:
                 self.parent.setScreenToLowerHalf() 
+            
+            # set Screen To RightHalf 
+            elif event.key() == Qt.Key_Right:
+                self.parent.setScreenToRightHalf()
+            
+            # set Screen To LeftHalf 
+            elif event.key() == Qt.Key_Left:
+                self.parent.setScreenToLeftHalf()
                 
             # save file
             elif event.key() == Qt.Key_S:
@@ -627,7 +647,6 @@ class QText(QPlainTextEdit):
 class QHigh(QSyntaxHighlighter):
     def __init__(self, document):
         QSyntaxHighlighter.__init__(self, document)
-        
         self.STYLES = {
             'keyword1': self._setFormat('#FFCC33'),
             'keyword2': self._setFormat('#FF66FF'),
@@ -727,16 +746,16 @@ class QHigh(QSyntaxHighlighter):
 class QTextLayout(QGridLayout):
     def __init__(self, appWindow):
         QGridLayout.__init__(self)
-        main_text = appWindow.getAllQText()
-        line_text = appWindow.getAllQLine()
-        push_btns = appWindow.getAllQBton()
+        QTextList = appWindow.getAllQText()
+        QLineList = appWindow.getAllQLine()
+        QBtonList = appWindow.getAllQBton()
         numOfQBton = appWindow.getNumOfQBton()
         [self.setColumnStretch(0,1)]
-        [self.addWidget(btn,0,i+1) for i,btn in enumerate(push_btns)]
-        [self.setColumnStretch(i,10) for i in range(1,numOfQBton+1)]
-        [self.addWidget(line_text[i],1,0,1,1) for i in range(numOfQBton)]
-        [self.addWidget(main_text[i],1,1,1,6) for i in range(numOfQBton)]
-        [btn.hide() for btn in push_btns]
+        [self.addWidget(btn,0,i+1) for i,btn in enumerate(QBtonList)]
+        [self.setColumnStretch(i,10) for i in range(1, numOfQBton+1)]
+        [self.addWidget(QLineList[i],1,0,1,1) for i in range(numOfQBton)]
+        [self.addWidget(QTextList[i],1,1,1,6) for i in range(numOfQBton)]
+        [btn.hide() for btn in QBtonList]
         [appWindow.setLayout(self)]
         
 if __name__ == '__main__' :
