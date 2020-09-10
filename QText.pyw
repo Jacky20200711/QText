@@ -743,7 +743,7 @@ class QHigh(QSyntaxHighlighter):
         # Return True if still inside a multi-line string, False otherwise
         return True if self.currentBlockState() == in_state else False
             
-class QTextLayout(QGridLayout):
+class QAppLayout(QGridLayout):
     def __init__(self, appWindow):
         QGridLayout.__init__(self)
         QTextList = appWindow.getAllQText()
@@ -761,7 +761,7 @@ class QTextLayout(QGridLayout):
 if __name__ == '__main__' :
     editorApp = QApplication(sys.argv)
     appWindow = QWindow()
-    appLayout = QTextLayout(appWindow)
+    appLayout = QAppLayout(appWindow)
     appWindow.hideOtherQLine(0)
     appWindow.hideOtherQText(0)
     appWindow.getTheQText(0).setFocus()
