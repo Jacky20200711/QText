@@ -2,10 +2,10 @@ import os, sys, webbrowser
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-
-class QWindow(QWidget):
+        
+class QMain(QWidget):
     def __init__(self):
-        super(QWindow, self).__init__()
+        super(QWidget, self).__init__()
         self.settingFile = os.path.split(sys.argv[0])[0] + '\\SettingFile.txt'
         self.defaultContentOfSettingFile = \
             'button,Unset,Unset\n'+ \
@@ -20,12 +20,12 @@ class QWindow(QWidget):
            r'iconPath,D:\Desktop\Project\QText\QText.ico'+'\n'
                                     
         self.setWindowTitle('QText')
-        self.numOfQBton = 6
-        self.QBtonList = [QBton(self,i) for i in range(self.numOfQBton)]
-        self.QLineList = [QLine(self,i) for i in range(self.numOfQBton)]
-        self.QTextList = [QText(self,i) for i in range(self.numOfQBton)]
-        self.highlight = [QHigh(QText.document()) for QText in self.QTextList]
-        self.showAllQBton = True
+        self.numOfQButton = 6
+        self.QButtonList = None
+        self.QLineList = None
+        self.QTextList = None
+        self.highlight = None
+        self.showAllQButton = True
         self.isFullScreen = False
         self.screenSize = QApplication.desktop().screenGeometry()
         self.screenUpperHalf = [0, 45, 1, 0.865]
@@ -37,9 +37,19 @@ class QWindow(QWidget):
         self.getEachLineInSettingFile()
         self.setScreenSize()
         self.setIcon()
-        self.setNameAndPathToAllQBton()
-        self.QLineList[0].setLineNumber()
         self.show()
+        
+    def CreateQButtons(self):
+        self.QButtonList = [QButton(self,i) for i in range(self.numOfQButton)]
+        
+    def CreateQLines(self):
+        self.QLineList = [QLine(self,i) for i in range(self.numOfQButton)]
+        
+    def CreateQTexts(self):
+        self.QTextList = [QText(self,i) for i in range(self.numOfQButton)]
+        
+    def CreateQHighlighterToAllQText(self):
+        self.highlight = [QHighlighter(QText.document()) for QText in self.QTextList]
         
     def resetSettingFile(self):
         if os.path.isfile(self.settingFile):
@@ -62,7 +72,6 @@ class QWindow(QWidget):
                     self.screenUpper[i] = float(s[i])
         
         if self.isFullScreen:
-            # setMaximumSize can avoid screen become too big
             X = int(self.screenUpper[0])
             Y = int(self.screenUpper[1])
             W = int(self.screenUpper[2] * self.screenSize.width())
@@ -157,27 +166,28 @@ class QWindow(QWidget):
         # set icon
         self.setWindowIcon(QIcon(iconPath))
         
-    def setNameAndPathToAllQBton(self):
-        # set QBton of the index = 0
-        self.QBtonList[0].setPath(self.QTextList[0].getFilePath())
+    def setNameAndPathToAllQButton(self):
+        # set QButton of the index = 0
+        firstQTextFilePath = self.QTextList[0].getFilePath()
+        self.QButtonList[0].setPath(firstQTextFilePath if firstQTextFilePath else 'QText')
             
         # get latest arguments from settingFile
         self.getEachLineInSettingFile()
         
-        # set QBton from index = 1
+        # set QButton from index = 1
         index = 1
         for line in self.eachLineInSettingFile:
             if line.startswith('button'):
                 btnSettingData = line.split(',')
                 # set filePath and name to each button if path is valid
                 if os.path.isfile(btnSettingData[2]):
-                    self.QBtonList[index].setName(btnSettingData[1])
-                    self.QBtonList[index].setPath(btnSettingData[2])
+                    self.QButtonList[index].setName(btnSettingData[1])
+                    self.QButtonList[index].setPath(btnSettingData[2])
                 else:
-                    self.QBtonList[index].setName('Unset')
-                    self.QBtonList[index].setPath('Unset')
+                    self.QButtonList[index].setName('Unset')
+                    self.QButtonList[index].setPath('Unset')
                 index += 1
-            # support at most 5 QBton 
+            # support at most 5 QButton 
             if index == 6:
                 break
                 
@@ -198,8 +208,8 @@ class QWindow(QWidget):
     def getAllQText(self):
         return self.QTextList
     
-    def getAllQBton(self):
-        return self.QBtonList
+    def getAllQButton(self):
+        return self.QButtonList
         
     def getTheQText(self, index):
         return self.QTextList[index]
@@ -207,8 +217,8 @@ class QWindow(QWidget):
     def getTheQLine(self, index):
         return self.QLineList[index]
         
-    def getNumOfQBton(self):    
-        return self.numOfQBton
+    def getNumOfQButton(self):    
+        return self.numOfQButton
         
     def showTheQText(self, index):
         self.QTextList[index].show()
@@ -217,23 +227,23 @@ class QWindow(QWidget):
         self.QLineList[index].show()
         
     def hideOtherQText(self, index):
-        [self.QTextList[i].hide() for i in range(self.numOfQBton) if i != index]    
+        [self.QTextList[i].hide() for i in range(self.numOfQButton) if i != index]    
         
     def hideOtherQLine(self, index):
-        [self.QLineList[i].hide() for i in range(self.numOfQBton) if i != index]
+        [self.QLineList[i].hide() for i in range(self.numOfQButton) if i != index]
     
     def keyPressEvent(self, event):
-        # set size of screen
+        # set screenSize
         if event.key() == Qt.Key_F2:
             self.setScreenSize()
             
-        # show or hide all QBton
+        # show or hide all QButton
         elif event.key() == Qt.Key_F1:
-            if self.showAllQBton:
-                [b.show() for b in self.QBtonList]
+            if self.showAllQButton:
+                [b.show() for b in self.QButtonList]
             else:
-                [b.hide() for b in self.QBtonList]
-            self.showAllQBton = not self.showAllQBton
+                [b.hide() for b in self.QButtonList]
+            self.showAllQButton = not self.showAllQButton
             
         # create or open the settingFile
         elif event.key() == Qt.Key_F10:
@@ -243,8 +253,8 @@ class QWindow(QWidget):
                 os.startfile(self.settingFile)
             else:
                 os.startfile(self.settingFile)
-            
-class QBton(QPushButton):
+                
+class QButton(QPushButton):
     def __init__(self, parent, index):
         QPushButton.__init__(self, parent)
         self.isEmptyQText = True    # avoid reload content of the file
@@ -276,8 +286,8 @@ class QBton(QPushButton):
         self.setText(name)
     
     def mousePressEvent(self, event):
-        # get the latest setting of all QBton
-        self.parent.setNameAndPathToAllQBton()
+        # get the latest setting of all QButton
+        self.parent.setNameAndPathToAllQButton()
         
         # check whether the btn has path-setting 
         if self.filePath == 'Unset':
@@ -317,7 +327,7 @@ class QBton(QPushButton):
                     content = file.read().decode('cp950', 'ignore')
                     self.parent.getTheQText(self.index).setPlainText(content)
                     self.isEmptyQText = False
-                
+                    
 class QLine(QPlainTextEdit):
     def __init__(self, parent, index):
         QPlainTextEdit.__init__(self, parent)
@@ -334,14 +344,14 @@ class QLine(QPlainTextEdit):
         )
     
     # The speed of open this app would be slow if you set all QLine at first
-    # Just set the first QLine when app start and set other QLine when other QBton is clicked
+    # Just set the first QLine when app start and set other QLine when other QButton is clicked
     def setLineNumber(self):
         if not self.hasSetLineNumber:
             self.hasSetLineNumber = True
             # set line_number and then move cursor to first line
             [self.insertPlainText('%5d\n'%i) for i in range(1, self.maxLineNumber)]
             [self.moveCursor(QTextCursor.Start)]
-                
+            
 class QText(QPlainTextEdit):
     def __init__(self, parent, index):
         QPlainTextEdit.__init__(self, parent)
@@ -352,14 +362,14 @@ class QText(QPlainTextEdit):
         self.setCursorWidth(3)
         self.filePath = ''            
         self.pattern = ''              # keep the string you want to find
-        self.openFile()                # try to fetch filename and open file
+        self.openFile()                # try to get ths filename and open this file
         self.wrapMode = True
         self.setStyleSheet((
             'color: white;'
             'background-color: black;'
             'border:1px solid black;')
         )
-        # synchronize line_number with Vbar_value of QTextList 
+        # synchronize verticalScrollBar to the QLine and the QText
         self.verticalScrollBar().valueChanged.connect(
             self.parent.getTheQLine(self.index).verticalScrollBar().setValue
         )
@@ -370,7 +380,6 @@ class QText(QPlainTextEdit):
     def setFilePath(self, filePath):
         self.filePath = filePath
         
-    # fetch filePath -> open file -> load content into QPlainTextEdit 
     def openFile(self):
         if len(sys.argv) > 1:
             filePath = ' '.join(sys.argv[1:]) # solve filePath with space_char
@@ -503,7 +512,7 @@ class QText(QPlainTextEdit):
                     with open(self.filePath, 'w+', encoding='utf-8') as file:
                         file.write(self.toPlainText())
                 
-            # open new QText
+            # open a new App
             elif event.key() == Qt.Key_N:
                 os.startfile(sys.argv[0])
                 
@@ -627,8 +636,7 @@ class QText(QPlainTextEdit):
             # make cursor align to first char of previous line
             space = len(line) - len(line.lstrip())
             [self.insertPlainText(' ') for i in range(space)]
-            # do this for Python-Programming
-            # rstrip can get rid off space_char that in back of :
+            # make Python-Programming more easily
             if line.rstrip().endswith(':'):
                 self.insertPlainText('    ')
                     
@@ -639,12 +647,12 @@ class QText(QPlainTextEdit):
         else:
             QPlainTextEdit.keyPressEvent(self, event)
         
-        # synchronize line_number with KeyEvent
+        # synchronize KeyEvent with QLine
         self.parent.getTheQLine(self.index).verticalScrollBar().setValue(
             self.verticalScrollBar().value()
         )
 
-class QHigh(QSyntaxHighlighter):
+class QHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
         QSyntaxHighlighter.__init__(self, document)
         self.STYLES = {
@@ -742,27 +750,42 @@ class QHigh(QSyntaxHighlighter):
 
         # Return True if still inside a multi-line string, False otherwise
         return True if self.currentBlockState() == in_state else False
-            
+
 class QAppLayout(QGridLayout):
     def __init__(self, appWindow):
         QGridLayout.__init__(self)
         QTextList = appWindow.getAllQText()
         QLineList = appWindow.getAllQLine()
-        QBtonList = appWindow.getAllQBton()
-        numOfQBton = appWindow.getNumOfQBton()
+        QButtonList = appWindow.getAllQButton()
+        numOfQButton = appWindow.getNumOfQButton()
         [self.setColumnStretch(0,1)]
-        [self.addWidget(btn,0,i+1) for i,btn in enumerate(QBtonList)]
-        [self.setColumnStretch(i,10) for i in range(1, numOfQBton+1)]
-        [self.addWidget(QLineList[i],1,0,1,1) for i in range(numOfQBton)]
-        [self.addWidget(QTextList[i],1,1,1,6) for i in range(numOfQBton)]
-        [btn.hide() for btn in QBtonList]
+        [self.addWidget(btn,0,i+1) for i,btn in enumerate(QButtonList)]
+        [self.setColumnStretch(i,10) for i in range(1, numOfQButton+1)]
+        [self.addWidget(QLineList[i],1,0,1,1) for i in range(numOfQButton)]
+        [self.addWidget(QTextList[i],1,1,1,6) for i in range(numOfQButton)]
+        [btn.hide() for btn in QButtonList]
         [appWindow.setLayout(self)]
         
 if __name__ == '__main__' :
     editorApp = QApplication(sys.argv)
-    appWindow = QWindow()
+    appWindow = QMain()
+    
+    # ceate UI
+    appWindow.CreateQButtons()
+    appWindow.CreateQLines()
+    appWindow.CreateQTexts()
+    
+    # set layout of UI
     appLayout = QAppLayout(appWindow)
+    
+    # set something of UI
+    appWindow.CreateQHighlighterToAllQText()
+    appWindow.setNameAndPathToAllQButton()
+    appWindow.getTheQLine(0).setLineNumber()
+    appWindow.getTheQText(0).setFocus()
+    
+    # Just show default UI which index = 0
     appWindow.hideOtherQLine(0)
     appWindow.hideOtherQText(0)
-    appWindow.getTheQText(0).setFocus()
+    
     sys.exit(editorApp.exec_())

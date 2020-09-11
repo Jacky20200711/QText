@@ -51,16 +51,16 @@ Esc : 刪除游標所在的那一行，並將游標定位到上一行的尾端
 2.打開命令列，使用以下指令安裝各個套件  
 pip install PyQt5  
 pip install sip  
-
+  
 3.到以下網址下載"pygame-1.9.6-cp38-cp38-win_amd64.whl"  
 http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame  
-
-4.將命令列的路徑切換到該whl檔案所在的資料夾，然後輸入以下指令  
-pip install pygame-1.9.6-cp38-cp38-win_amd64.whl  
   
-5.架設好環境後，雙擊QText.pyw   
-
-# 執行的結果1(編輯TXT檔)  
+4.將命令列的路徑切換到該whl檔案所在的資料夾，然後輸入以下指令  
+pip install pygame-1.9.6-cp38-cp38-win_amd64.whl   
+  
+5.架設好環境後，雙擊 QText.pyw  
+  
+# 執行的結果1(編輯TXT檔)   
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO1.PNG?raw=true)
 &emsp;
 &emsp;
