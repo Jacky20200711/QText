@@ -770,6 +770,7 @@ if __name__ == '__main__' :
     appWindow.createQLines()
     appWindow.createQTexts()
     appWindow.setLayoutOfUI()
+    
     # set data to all QButton
     # set line number to QLine which index = 0
     # set focus to QText which index = 0
@@ -778,7 +779,9 @@ if __name__ == '__main__' :
     appWindow.getTheQLine(0).setLineNumber()
     appWindow.getTheQText(0).setFocus()
     appWindow.createQHighlighterToAllQText()
+    
     # Just show default UI which index = 0
     appWindow.hideOtherQLine(0)
     appWindow.hideOtherQText(0)
+    
     sys.exit(editorApp.exec_())
