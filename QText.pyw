@@ -27,6 +27,7 @@ class QMain(QWidget):
         self.highlight = None
         self.showAllQButton = True
         self.isFullScreen = False
+        self.layout = None
         self.screenSize = QApplication.desktop().screenGeometry()
         self.screenUpperHalf = [0, 45, 1, 0.865]
         self.screenLowerHalf = [0, 555, 1, 0.865]
@@ -39,22 +40,32 @@ class QMain(QWidget):
         self.setIcon()
         self.show()
         
-    def CreateQButtons(self):
+    def createQButtons(self):
         self.QButtonList = [QButton(self,i) for i in range(self.numOfQButton)]
         
-    def CreateQLines(self):
+    def createQLines(self):
         self.QLineList = [QLine(self,i) for i in range(self.numOfQButton)]
         
-    def CreateQTexts(self):
+    def createQTexts(self):
         self.QTextList = [QText(self,i) for i in range(self.numOfQButton)]
         
-    def CreateQHighlighterToAllQText(self):
+    def createQHighlighterToAllQText(self):
         self.highlight = [QHighlighter(QText.document()) for QText in self.QTextList]
         
     def resetSettingFile(self):
         if os.path.isfile(self.settingFile):
             with open(self.settingFile, 'w+') as file:
                 file.write(self.defaultContentOfSettingFile)
+        
+    def setLayoutOfUI(self):
+        self.layout = QGridLayout()
+        self.layout.setColumnStretch(0,1)
+        [self.layout.addWidget(btn,0,i+1) for i,btn in enumerate(self.QButtonList)]
+        [self.layout.setColumnStretch(i,10) for i in range(1, self.numOfQButton+1)]
+        [self.layout.addWidget(self.QLineList[i],1,0,1,1) for i in range(self.numOfQButton)]
+        [self.layout.addWidget(self.QTextList[i],1,1,1,6) for i in range(self.numOfQButton)]
+        [btn.hide() for btn in self.QButtonList]
+        self.setLayout(self.layout)
         
     def setScreenSize(self):
         # get latest arguments from settingFile
@@ -750,42 +761,24 @@ class QHighlighter(QSyntaxHighlighter):
 
         # Return True if still inside a multi-line string, False otherwise
         return True if self.currentBlockState() == in_state else False
-
-class QAppLayout(QGridLayout):
-    def __init__(self, appWindow):
-        QGridLayout.__init__(self)
-        QTextList = appWindow.getAllQText()
-        QLineList = appWindow.getAllQLine()
-        QButtonList = appWindow.getAllQButton()
-        numOfQButton = appWindow.getNumOfQButton()
-        [self.setColumnStretch(0,1)]
-        [self.addWidget(btn,0,i+1) for i,btn in enumerate(QButtonList)]
-        [self.setColumnStretch(i,10) for i in range(1, numOfQButton+1)]
-        [self.addWidget(QLineList[i],1,0,1,1) for i in range(numOfQButton)]
-        [self.addWidget(QTextList[i],1,1,1,6) for i in range(numOfQButton)]
-        [btn.hide() for btn in QButtonList]
-        [appWindow.setLayout(self)]
         
 if __name__ == '__main__' :
     editorApp = QApplication(sys.argv)
     appWindow = QMain()
-    
-    # ceate UI
-    appWindow.CreateQButtons()
-    appWindow.CreateQLines()
-    appWindow.CreateQTexts()
-    
-    # set layout of UI
-    appLayout = QAppLayout(appWindow)
-    
-    # set something of UI
-    appWindow.CreateQHighlighterToAllQText()
+    # create UI and set layout 
+    appWindow.createQButtons()
+    appWindow.createQLines()
+    appWindow.createQTexts()
+    appWindow.setLayoutOfUI()
+    # set data to all QButton
+    # set line number to QLine which index = 0
+    # set focus to QText which index = 0
+    # create Highlighter for all QText
     appWindow.setNameAndPathToAllQButton()
     appWindow.getTheQLine(0).setLineNumber()
     appWindow.getTheQText(0).setFocus()
-    
+    appWindow.createQHighlighterToAllQText()
     # Just show default UI which index = 0
     appWindow.hideOtherQLine(0)
     appWindow.hideOtherQText(0)
-    
     sys.exit(editorApp.exec_())
