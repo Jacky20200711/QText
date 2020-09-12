@@ -4,8 +4,14 @@
 # 使用技術  
 GUI程式設計、物件導向(封裝、繼承、多型)  
   
-# 開發環境 & 使用的套件  
+# 開發環境  
 win10(64bit) + Python3.8.5 + PyQt5  
+
+# 架構簡述  
+總共有六個類別(QMain、QButton、QLine、QText、QGridLayout、QHighlighter)  
+QMain 為主程式的視窗，也是其餘五個類別的 Parent  
+QGridLayout 用來控制 QButton、QLine、QText 在 QMain 中的擺放位置  
+QHighlighter 用來協助 QText 產生語法高亮  
 
 # 功能說明  
 1.遇到 Python 的 "Keyword" 和 "Operator" 會產生語法高亮  
