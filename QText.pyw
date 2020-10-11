@@ -704,7 +704,7 @@ class QHighlighter(QSyntaxHighlighter):
         rules += [(r'\b%s\b'%w , 0, self.STYLES['keyword2']) for w in keywords2]
         rules += [(r'\bself\b'         , 0, self.STYLES['defclass'])]
         rules += [(r'#[^\n\'\"]*'      , 0, self.STYLES['comment' ])]
-        rules += [(r'[^:]//[^\n\'\"]*' , 0, self.STYLES['defclass' ])]
+        rules += [(r'[^:]//[^\n\'\"]*' , 0, self.STYLES['comment' ])]
         rules += [(r'\bdef\b\s*(\w+)'  , 1, self.STYLES['defclass'])]
         rules += [
             (r'"[^"\\]*(\\.[^"\\]*)*"', 0, self.STYLES['string']),
