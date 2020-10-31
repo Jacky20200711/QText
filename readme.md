@@ -1,11 +1,12 @@
 # 程式用途  
-自製的簡易編輯器，用來 "編輯檔案" 以及 "撰寫Python"  
+自製的簡易編輯器，主要用來取代記事本，以及撰寫 Python 腳本。  
   
 # 使用技術  
-GUI程式設計、物件導向(封裝、繼承、多型)  
-  
+1.使用物件導向(封裝、繼承、多型)  
+2.使用 PyQt5 進行 GUI 程式設計  
+
 # 開發環境  
-win10(64bit) + Python3.8.5 + PyQt5  
+Win10(64bit) + Python 3.8.5  
 
 # 架構簡述  
 總共有六個類別(QMain、QButton、QLine、QText、QGridLayout、QHighlighter)  
@@ -15,7 +16,6 @@ QHighlighter 用來協助 QText 產生語法高亮
 
 # 功能說明  
 1.遇到 Python 的 "Keyword" 和 "Operator" 會產生語法高亮  
-
 2.功能鍵和組合鍵  
 F1 : 顯示或隱藏[開啟其它檔案的按鈕]，按鈕需要到F10設定有效的檔案路徑後才能使用  
 F2 : 放大或縮小視窗  
