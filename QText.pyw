@@ -416,12 +416,15 @@ class QText(QPlainTextEdit):
             self.moveCursor(QTextCursor.Up)
             self.moveCursor(QTextCursor.EndOfLine)
                 
-        # open website
+        # open website by chrome
         elif event.key() == Qt.Key_F4:
             cursor = self.textCursor()
             cursor.select(QTextCursor.LineUnderCursor)
-            if cursor.selectedText().startswith('http'):
-                webbrowser.open_new_tab(cursor.selectedText())
+            underPath = cursor.selectedText()
+            underPathExtension = os.path.splitext(underPath)[1]
+            if underPath.startswith('http') or underPathExtension in ['.cs', '.cshtml', '.html', '.txt']:
+                Chrome = r'"C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe" '
+                os.popen(Chrome + cursor.selectedText())
                         
         # execute python script
         elif event.key() == Qt.Key_F5:
