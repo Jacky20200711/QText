@@ -52,11 +52,6 @@ class QMain(QWidget):
     def createQHighlighterToAllQText(self):
         self.highlight = [QHighlighter(QText.document()) for QText in self.QTextList]
         
-    def resetSettingFile(self):
-        if os.path.isfile(self.settingFile):
-            with open(self.settingFile, 'w+') as file:
-                file.write(self.defaultContentOfSettingFile)
-        
     def setLayoutOfUI(self):
         self.layout = QGridLayout()
         self.layout.setColumnStretch(0,1)
@@ -422,7 +417,8 @@ class QText(QPlainTextEdit):
             cursor.select(QTextCursor.LineUnderCursor)
             underPath = cursor.selectedText()
             underPathExtension = os.path.splitext(underPath)[1]
-            if underPath.startswith('http') or underPathExtension in ['.cs', '.cshtml', '.html', '.txt']:
+            SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json'])
+            if underPath.startswith('http') or underPathExtension in SupportExtension:
                 Chrome = r'"C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe" '
                 os.popen(Chrome + cursor.selectedText())
                         
@@ -488,10 +484,6 @@ class QText(QPlainTextEdit):
                     self.setLineWrapMode(QPlainTextEdit.WidgetWidth)
                 # reverse the flag
                 self.wrapMode = not self.wrapMode
-            
-            # reset settingFile
-            elif event.key() == Qt.Key_F10:
-                self.parent.resetSettingFile() 
                 
             # set Screen To UpperHalf 
             elif event.key() == Qt.Key_Up:
