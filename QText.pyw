@@ -419,8 +419,8 @@ class QText(QPlainTextEdit):
             underPathExtension = os.path.splitext(underPath)[1].lower()
             SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config'])
             if underPath.startswith('http') or underPathExtension in SupportExtension:
-                Chrome = r'"C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe" '
-                os.popen(Chrome + cursor.selectedText())
+                Chrome = r'C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe '
+                os.popen('"%s" "%s"'%(Chrome, cursor.selectedText()))
                         
         # execute python script
         elif event.key() == Qt.Key_F5:
