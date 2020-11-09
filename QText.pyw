@@ -416,7 +416,7 @@ class QText(QPlainTextEdit):
             cursor = self.textCursor()
             cursor.select(QTextCursor.LineUnderCursor)
             underPath = cursor.selectedText()
-            underPathExtension = os.path.splitext(underPath)[1]
+            underPathExtension = os.path.splitext(underPath)[1].lower()
             SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config'])
             if underPath.startswith('http') or underPathExtension in SupportExtension:
                 Chrome = r'"C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe" '
