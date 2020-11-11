@@ -424,7 +424,7 @@ class QText(QPlainTextEdit):
                         
         # execute python script
         elif event.key() == Qt.Key_F5:
-            if os.path.splitext(self.filePath)[1] in ['.pyw','.py']:
+            if os.path.splitext(self.filePath)[1].lower() in ['.pyw','.py']:
                 os.system('python "%s" & pause'%(self.filePath))
             
         # indent
