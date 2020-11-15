@@ -13,7 +13,7 @@ class QMain(QWidget):
             'button,Unset,Unset\n'+ \
             'button,Unset,Unset\n'+ \
             'button,Unset,Unset\n'+ \
-            'screenLower,0.1,0.1,0.8,0.8\n'+ \
+            'screenLower,0.1,0.1,0.85,0.8\n'+ \
             'screenUpper,0,45,1,0.917\n'+ \
             'screenToTopHalf,0,45,1,0.865\n'+ \
             'screenToBottomHalf,0,555,1,0.865\n'+ \
@@ -31,7 +31,7 @@ class QMain(QWidget):
         self.screenSize = QApplication.desktop().screenGeometry()
         self.screenUpperHalf = [0, 45, 1, 0.865]
         self.screenLowerHalf = [0, 555, 1, 0.865]
-        self.screenLower = [0.1, 0.1, 0.8, 0.8]
+        self.screenLower = [0.1, 0.1, 0.85, 0.8]
         self.screenUpper = [0, 45, 1, 0.917]
         self.eachLineInSettingFile = []
         self.setAttribute(Qt.WA_DeleteOnClose)
