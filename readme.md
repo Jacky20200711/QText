@@ -4,51 +4,43 @@
 # 使用技術  
 1.使用物件導向(封裝、繼承、多型)  
 2.使用 PyQt5 進行 GUI 程式設計  
-
+  
 # 開發環境  
 Win10(64bit) + Python 3.8.5  
-
+  
 # 架構簡述  
 總共有六個類別(QMain、QButton、QLine、QText、QGridLayout、QHighlighter)  
 QMain 為主程式的視窗，也是其餘五個類別的 Parent  
 QGridLayout 用來控制 QButton、QLine、QText 在 QMain 中的擺放位置  
 QHighlighter 用來協助 QText 產生語法高亮  
-
+  
 # 功能說明  
 1.遇到 Python 的 "Keyword" 和 "Operator" 會產生語法高亮  
 2.功能鍵和組合鍵  
 F1 : 顯示或隱藏[開啟其它檔案的按鈕]，按鈕需要到F10設定有效的檔案路徑後才能使用  
 F2 : 放大或縮小視窗  
 F3 : 往下搜尋字串(往上為Alt+F3)  
-F4 : 開啟網址(網址必須完整，並且必須獨佔一行)  
+F4 : 嘗試用 Chrome 開啟游標底下的網址 or 檔案(路徑必須完整且獨佔一行)  
 F5 : 執行自己(副檔名必須為py或pyw)  
 F10: 開啟設定檔(可以在此設定視窗大小、視窗位置、ICON路徑、按鈕的名稱和對應檔案的路徑)  
-  
+Ctrl + F10 : 嘗試開啟游標底下的檔案(路徑必須完整且獨佔一行)  
 Ctrl + F : 搜尋字串，若搜尋失敗會顯示提示訊息  
 Ctrl + S : 儲存檔案  
 Ctrl + N : 開新檔案  
 Ctrl + C : 複製游標所在的那一行  
 Ctrl + X : 剪下游標所在的那一行  
 Ctrl + ↑ : 讓APP的視窗占滿螢幕的上半部  
-Ctrl + ↓ : 讓APP的視窗占滿螢幕的下半部    
+Ctrl + ↓ : 讓APP的視窗占滿螢幕的下半部  
 Ctrl + ← : 讓APP的視窗占滿螢幕的左半部  
 Ctrl + → : 讓APP的視窗占滿螢幕的右半部  
-Ctrl + F10 : 將設定檔恢復成預設值    
-  
 Alt + W  : 關閉檔案  
 Alt + X  : 刪除游標左邊的該行字元  
 Alt + C  : 刪除游標右邊的該行字元  
 Alt + 1  : 將括號後的字元移到當前游標所在的空括號  
-  
-Enter :    
-1.插入新行，游標自動與上一行的第1個字元對齊  
-2.如果上一行的最後有效字元(空白為無效字元)為 ':' 則游標會進行縮進  
-  
-Enter + shift : 效果如記事本的Enter  
-
+Enter : 插入新行並與上一行的第1個字元對齊  
+Enter + shift : 效果如一般的 Enter  
 Tab : 插入4個空白字元 or 將 "被滑鼠選取到的那幾行" 做縮排  
 Tab + shitf : 將 "被滑鼠選取到的那幾行" 做反縮排  
-  
 Esc : 刪除游標所在的那一行，並將游標定位到上一行的尾端  
   
 # 架設環境的步驟 & 此程式的執行方法  
@@ -62,31 +54,31 @@ pip install sip
 http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame  
   
 4.將命令列的路徑切換到該whl檔案所在的資料夾，然後輸入以下指令  
-pip install pygame-1.9.6-cp38-cp38-win_amd64.whl   
+pip install pygame-1.9.6-cp38-cp38-win_amd64.whl  
   
 5.架設好環境後，雙擊 QText.pyw  
   
-# 執行的結果1(編輯TXT檔)   
-![image](https://github.com/Jacky20200711/QText/blob/master/DEMO1.PNG?raw=true)
-&emsp;
-&emsp;
-&emsp;
+# 執行的結果1(編輯TXT檔)  
+![image](https://github.com/Jacky20200711/QText/blob/master/DEMO1.PNG?raw=true)  
+&emsp;  
+&emsp;  
+&emsp;  
 # 執行的結果2(執行PY檔)  
-![image](https://github.com/Jacky20200711/QText/blob/master/DEMO2.PNG?raw=true)
-&emsp;
-&emsp;
-&emsp;
+![image](https://github.com/Jacky20200711/QText/blob/master/DEMO2.PNG?raw=true)  
+&emsp;  
+&emsp;  
+&emsp;  
 # 執行的結果3(用來編輯其它檔案的按鈕)  
-![image](https://github.com/Jacky20200711/QText/blob/master/DEMO3.PNG?raw=true)
-&emsp;
-&emsp;
-&emsp;
+![image](https://github.com/Jacky20200711/QText/blob/master/DEMO3.PNG?raw=true)  
+&emsp;  
+&emsp;  
+&emsp;  
 # 執行的結果4(方便上下比對兩個檔案的內容)  
-![image](https://github.com/Jacky20200711/QText/blob/master/DEMO4.PNG?raw=true)
-&emsp;
-&emsp;
-&emsp;
-# 執行的結果5(方便左右比對兩個檔案的內容)   
-![image](https://github.com/Jacky20200711/QText/blob/master/DEMO5.PNG?raw=true)
-&emsp;
-&emsp;
+![image](https://github.com/Jacky20200711/QText/blob/master/DEMO4.PNG?raw=true)  
+&emsp;  
+&emsp;  
+&emsp;  
+# 執行的結果5(方便左右比對兩個檔案的內容)  
+![image](https://github.com/Jacky20200711/QText/blob/master/DEMO5.PNG?raw=true)  
+&emsp;  
+&emsp  

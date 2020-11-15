@@ -420,7 +420,7 @@ class QText(QPlainTextEdit):
             SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config'])
             if underPath.startswith('http') or underPathExtension in SupportExtension:
                 Chrome = r'C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe '
-                os.popen('"%s" "%s"'%(Chrome, cursor.selectedText()))
+                os.popen('"%s" "%s"'%(Chrome, underPath))
                         
         # execute python script
         elif event.key() == Qt.Key_F5:
@@ -562,6 +562,17 @@ class QText(QPlainTextEdit):
                     [cursor.deletePreviousChar() for i in range(colNum)]
                 else:
                     QPlainTextEdit.keyPressEvent(self, event)
+                    
+            # open the file 
+            elif event.key() == Qt.Key_F10:
+                cursor = self.textCursor()
+                cursor.select(QTextCursor.LineUnderCursor)
+                underPath = cursor.selectedText()
+                underPathExtension = os.path.splitext(underPath)[1].lower()
+                SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config'])
+                if underPathExtension in SupportExtension:
+                    if os.path.exists(underPath):
+                        os.startfile(underPath)
             else:
                 QPlainTextEdit.keyPressEvent(self, event)
             
