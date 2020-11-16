@@ -340,7 +340,7 @@ class QLine(QPlainTextEdit):
         self.verticalScrollBar().setEnabled(False)
         self.setFont(QFont('consolas', 14, 0, False))
         self.setReadOnly(True)
-        self.maxLineNumber = 3001
+        self.maxLineNumber = 3000
         self.hasSetLineNumber = False
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setStyleSheet((
@@ -355,8 +355,16 @@ class QLine(QPlainTextEdit):
         if not self.hasSetLineNumber:
             self.hasSetLineNumber = True
             # set line_number and then move cursor to first line
-            [self.insertPlainText('%5d\n'%i) for i in range(1, self.maxLineNumber)]
+            [self.insertPlainText('%5d\n'%i) for i in range(1, self.maxLineNumber+1)]
             [self.moveCursor(QTextCursor.Start)]
+    
+    def ExtendLineNumber(self):
+        [self.moveCursor(QTextCursor.End)]
+        starLineNumber = self.maxLineNumber + 1
+        number_addNewLine = 3000
+        rightBound = starLineNumber + number_addNewLine
+        [self.insertPlainText('%5d\n'%i) for i in range(starLineNumber, rightBound)]
+        self.maxLineNumber = rightBound - 1
             
 class QText(QPlainTextEdit):
     def __init__(self, parent, index):
@@ -500,6 +508,10 @@ class QText(QPlainTextEdit):
             # set Screen To LeftHalf 
             elif event.key() == Qt.Key_Left:
                 self.parent.setScreenToLeftHalf()
+            
+            # extend line number
+            elif event.key() == Qt.Key_P:
+                self.parent.getTheQLine(self.index).ExtendLineNumber()
                 
             # save file
             elif event.key() == Qt.Key_S:
