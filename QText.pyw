@@ -358,7 +358,7 @@ class QLine(QPlainTextEdit):
             [self.insertPlainText('%5d\n'%i) for i in range(1, self.maxLineNumber+1)]
             [self.moveCursor(QTextCursor.Start)]
     
-    def ExtendLineNumber(self):
+    def extendLineNumber(self):
         [self.moveCursor(QTextCursor.End)]
         starLineNumber = self.maxLineNumber + 1
         number_addNewLine = 3000
@@ -511,7 +511,7 @@ class QText(QPlainTextEdit):
             
             # extend line number
             elif event.key() == Qt.Key_P:
-                self.parent.getTheQLine(self.index).ExtendLineNumber()
+                self.parent.getTheQLine(self.index).extendLineNumber()
                 
             # save file
             elif event.key() == Qt.Key_S:
@@ -784,6 +784,7 @@ class QHighlighter(QSyntaxHighlighter):
 if __name__ == '__main__' :
     editorApp = QApplication(sys.argv)
     appWindow = QMain()
+    
     # create UI and set layout 
     appWindow.createQButtons()
     appWindow.createQLines()
