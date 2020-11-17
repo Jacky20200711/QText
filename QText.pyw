@@ -13,7 +13,7 @@ class QMain(QWidget):
             'button,Unset,Unset\n'+ \
             'button,Unset,Unset\n'+ \
             'button,Unset,Unset\n'+ \
-            'screenLower,0.1,0.1,0.85,0.8\n'+ \
+            'screenLower,0.1,0.1,0.8,0.8\n'+ \
             'screenUpper,0,45,1,0.917\n'+ \
             'screenToTopHalf,0,45,1,0.865\n'+ \
             'screenToBottomHalf,0,555,1,0.865\n'+ \
@@ -31,7 +31,7 @@ class QMain(QWidget):
         self.screenSize = QApplication.desktop().screenGeometry()
         self.screenUpperHalf = [0, 45, 1, 0.865]
         self.screenLowerHalf = [0, 555, 1, 0.865]
-        self.screenLower = [0.1, 0.1, 0.85, 0.8]
+        self.screenLower = [0.1, 0.1, 0.8, 0.8]
         self.screenUpper = [0, 45, 1, 0.917]
         self.eachLineInSettingFile = []
         self.setAttribute(Qt.WA_DeleteOnClose)
@@ -377,7 +377,8 @@ class QText(QPlainTextEdit):
         self.filePath = ''            
         self.pattern = ''              # keep the string you want to find
         self.openFile()                # try to get ths filename and open this file
-        self.wrapMode = True
+        self.wrapMode = False
+        self.setLineWrapMode(QPlainTextEdit.NoWrap)
         self.setStyleSheet((
             'color: white;'
             'background-color: black;'
@@ -486,11 +487,7 @@ class QText(QPlainTextEdit):
         elif QApplication.keyboardModifiers() == Qt.ControlModifier:
             # change WrapMode 
             if event.key() == Qt.Key_L:
-                if self.wrapMode:
-                    self.setLineWrapMode(QPlainTextEdit.NoWrap)
-                else:
-                    self.setLineWrapMode(QPlainTextEdit.WidgetWidth)
-                # reverse the flag
+                self.setLineWrapMode(QPlainTextEdit.NoWrap if self.wrapMode else QPlainTextEdit.WidgetWidth)
                 self.wrapMode = not self.wrapMode
                 
             # set Screen To UpperHalf 
