@@ -720,15 +720,14 @@ class QHighlighter(QSyntaxHighlighter):
         
         rules += [(r'\b%s\b'%w , 0, self.STYLES['keyword1']) for w in keywords1]
         rules += [(r'\b%s\b'%w , 0, self.STYLES['keyword2']) for w in keywords2]
+        rules += [(r'\bclass\b\s*(\w+)', 1, self.STYLES['defclass'])]
+        rules += [(r'\bdef\b\s*(\w+)'  , 1, self.STYLES['defclass'])]
         rules += [(r'\bself\b'         , 0, self.STYLES['defclass'])]
         rules += [(r'#[^\n\'\"]*'      , 0, self.STYLES['comment' ])]
         rules += [(r'[^:]//[^\n\'\"]*' , 0, self.STYLES['comment' ])]
-        rules += [(r'\bdef\b\s*(\w+)'  , 1, self.STYLES['defclass'])]
-        rules += [
-            (r'"[^"\\]*(\\.[^"\\]*)*"', 0, self.STYLES['string']),
-            (r"'[^'\\]*(\\.[^'\\]*)*'", 0, self.STYLES['string']),
-            (r'\bclass\b\s*(\w+)'     , 1, self.STYLES['defclass'])
-        ]
+        rules += [(r'[^:]//[^\n\'\"]*' , 0, self.STYLES['comment' ])]
+        rules += [(r'"[^"\\]*(\\.[^"\\]*)*"', 0, self.STYLES['string'])]
+        rules += [(r"'[^'\\]*(\\.[^'\\]*)*'", 0, self.STYLES['string'])]
 
         # Build a QRegExp for each pattern
         self.rules = [(QRegExp(pat), index, fmt) for (pat, index, fmt) in rules]
