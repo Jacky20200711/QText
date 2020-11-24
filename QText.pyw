@@ -7,18 +7,6 @@ class QMain(QWidget):
     def __init__(self):
         super(QWidget, self).__init__()
         self.settingFile = os.path.split(sys.argv[0])[0] + '\\SettingFile.txt'
-        self.defaultContentOfSettingFile = \
-            'button,Unset,Unset\n'+ \
-            'button,Unset,Unset\n'+ \
-            'button,Unset,Unset\n'+ \
-            'button,Unset,Unset\n'+ \
-            'button,Unset,Unset\n'+ \
-            'screenLower,0.1,0.1,0.8,0.8\n'+ \
-            'screenUpper,0,45,1,0.917\n'+ \
-            'screenToTopHalf,0,45,1,0.865\n'+ \
-            'screenToBottomHalf,0,555,1,0.865\n'+ \
-           r'iconPath,D:\Desktop\Project\QText\QText.ico'+'\n'
-                                    
         self.setWindowTitle('QText')
         self.numOfQButton = 6
         self.QButtonList = None
@@ -31,7 +19,7 @@ class QMain(QWidget):
         self.screenSize = QApplication.desktop().screenGeometry()
         self.screenUpperHalf = [0, 45, 1, 0.865]
         self.screenLowerHalf = [0, 555, 1, 0.865]
-        self.screenLower = [0.1, 0.1, 0.8, 0.8]
+        self.screenLower = [0.1, 0.1, 0.75, 0.8]
         self.screenUpper = [0, 45, 1, 0.917]
         self.eachLineInSettingFile = []
         self.setAttribute(Qt.WA_DeleteOnClose)
@@ -39,6 +27,17 @@ class QMain(QWidget):
         self.setScreenSize()
         self.setIcon()
         self.show()
+        self.defaultContentOfSettingFile = \
+            'button,Unset,Unset\n'+ \
+            'button,Unset,Unset\n'+ \
+            'button,Unset,Unset\n'+ \
+            'button,Unset,Unset\n'+ \
+            'button,Unset,Unset\n'+ \
+            'screenLower,0.1,0.1,0.75,0.8\n'+ \
+            'screenUpper,0,45,1,0.917\n'+ \
+            'screenToTopHalf,0,45,1,0.865\n'+ \
+            'screenToBottomHalf,0,555,1,0.865\n'+ \
+           r'iconPath,D:\Desktop\Project\QText\QText.ico'+'\n'
         
     def createQButtons(self):
         self.QButtonList = [QButton(self,i) for i in range(self.numOfQButton)]
@@ -251,14 +250,12 @@ class QMain(QWidget):
                 [b.hide() for b in self.QButtonList]
             self.showAllQButton = not self.showAllQButton
             
-        # create or open the settingFile
+        # open the settingFile
         elif event.key() == Qt.Key_F10:
             if not os.path.isfile(self.settingFile):
                 with open(self.settingFile, 'w+') as file:
                     file.write(self.defaultContentOfSettingFile)
-                os.startfile(self.settingFile)
-            else:
-                os.startfile(self.settingFile)
+            os.startfile(self.settingFile)
                 
 class QButton(QPushButton):
     def __init__(self, parent, index):
@@ -505,10 +502,6 @@ class QText(QPlainTextEdit):
             # set Screen To LeftHalf 
             elif event.key() == Qt.Key_Left:
                 self.parent.setScreenToLeftHalf()
-            
-            # extend line number
-            elif event.key() == Qt.Key_P:
-                self.parent.getTheQLine(self.index).extendLineNumber()
                 
             # save file
             elif event.key() == Qt.Key_S:
@@ -590,6 +583,10 @@ class QText(QPlainTextEdit):
             # exit
             if event.key() == Qt.Key_W:
                 QCoreApplication.quit()
+                
+            # extend line number
+            elif event.key() == Qt.Key_L:
+                self.parent.getTheQLine(self.index).extendLineNumber()
                 
             # find previous pattern
             elif event.key() == Qt.Key_F3:
