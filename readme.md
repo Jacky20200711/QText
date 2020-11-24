@@ -37,6 +37,7 @@ Alt + W  : 關閉檔案
 Alt + X  : 刪除游標左邊的該行字元  
 Alt + C  : 刪除游標右邊的該行字元  
 Alt + 1  : 將括號後的字元移到當前游標所在的空括號  
+Alt + L  : 延伸行數(預設的行數只有到3000，可用此功能來延伸行數)  
 Enter : 插入新行並與上一行的第1個字元對齊  
 Enter + shift : 效果如一般的 Enter  
 Tab : 插入4個空白字元 or 將 "被滑鼠選取到的那幾行" 做縮排  
@@ -81,4 +82,4 @@ pip install pygame-1.9.6-cp38-cp38-win_amd64.whl
 # 執行的結果5(方便左右比對兩個檔案的內容)  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO5.PNG?raw=true)  
 &emsp;  
-&emsp  
+&emsp;  
