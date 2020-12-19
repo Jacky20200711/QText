@@ -65,17 +65,7 @@ pip install pygame-1.9.6-cp38-cp38-win_amd64.whl
 &emsp;  
 &emsp;  
 &emsp;  
-# 執行的結果3(用來編輯其它檔案的按鈕)  
+# 執行的結果3(用來載入並編輯其它檔案的按鈕)  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO3.PNG?raw=true)  
-&emsp;  
-&emsp;  
-&emsp;  
-# 執行的結果4(方便上下比對兩個檔案的內容)  
-![image](https://github.com/Jacky20200711/QText/blob/master/DEMO4.PNG?raw=true)  
-&emsp;  
-&emsp;  
-&emsp;  
-# 執行的結果5(方便左右比對兩個檔案的內容)  
-![image](https://github.com/Jacky20200711/QText/blob/master/DEMO5.PNG?raw=true)  
 &emsp;  
 &emsp;  
