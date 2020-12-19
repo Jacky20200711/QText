@@ -17,8 +17,6 @@ class QMain(QWidget):
         self.isFullScreen = False
         self.layout = None
         self.screenSize = QApplication.desktop().screenGeometry()
-        self.screenUpperHalf = [0, 45, 1, 0.865]
-        self.screenLowerHalf = [0, 555, 1, 0.865]
         self.screenLower = [0.1, 0.1, 0.78, 0.8]
         self.screenUpper = [0, 45, 1, 0.917]
         self.eachLineInSettingFile = []
@@ -223,8 +221,8 @@ class QButton(QPushButton):
         if self.filePath == 'Unset':
             QMessageBox.warning(
                 self.parent, 
-                'Message', 
-                'The setting of the button is incorrect.'
+                'Hint', 
+                'Please press F10 to set this button.'
             )
             return
             
