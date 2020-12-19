@@ -35,8 +35,6 @@ class QMain(QWidget):
             'button,Unset,Unset\n'+ \
             'screenLower,0.1,0.1,0.78,0.8\n'+ \
             'screenUpper,0,45,1,0.917\n'+ \
-            'screenToTopHalf,0,45,1,0.865\n'+ \
-            'screenToBottomHalf,0,555,1,0.865\n'+ \
            r'iconPath,D:\Desktop\Project\QText\QText.ico'+'\n'
         
     def createQButtons(self):
@@ -90,74 +88,6 @@ class QMain(QWidget):
             self.setGeometry(X, Y, W, H)
             
         self.isFullScreen = not self.isFullScreen
-        
-    def setScreenToUpperHalf(self):
-        # get latest arguments from settingFile
-        self.getEachLineInSettingFile()
-        
-        # try to update arguments from settingFile
-        for line in self.eachLineInSettingFile:
-            if line.startswith('screenToTopHalf'):
-                s = line.split(',')[1:]
-                for i in range(4):
-                    self.screenUpperHalf[i] = float(s[i])
-        
-        X = int(self.screenUpperHalf[0])
-        Y = int(self.screenUpperHalf[1])
-        W = int(self.screenUpperHalf[2] * self.screenSize.width())
-        H = int(self.screenUpperHalf[3] * self.screenSize.height()) >> 1
-        self.setGeometry(X, Y, W, H)
-        
-    def setScreenToLowerHalf(self):
-        # get latest arguments from settingFile
-        self.getEachLineInSettingFile()
-        
-        # try to update arguments from settingFile
-        for line in self.eachLineInSettingFile:
-            if line.startswith('screenToBottomHalf'):
-                s = line.split(',')[1:]
-                for i in range(4):
-                    self.screenLowerHalf[i] = float(s[i])
-        
-        X = int(self.screenLowerHalf[0])
-        Y = int(self.screenLowerHalf[1])
-        W = int(self.screenLowerHalf[2] * self.screenSize.width())
-        H = int(self.screenLowerHalf[3] * self.screenSize.height()) >> 1
-        self.setGeometry(X, Y, W, H)
-        
-    def setScreenToRightHalf(self):
-        # get latest arguments from settingFile
-        self.getEachLineInSettingFile()
-        
-        # try to update arguments from settingFile
-        for line in self.eachLineInSettingFile:
-            if line.startswith('screenUpper'):
-                s = line.split(',')[1:]
-                for i in range(4):
-                    self.screenUpper[i] = float(s[i])
-        
-        X = int(self.screenUpper[0]) + (self.screenSize.width() >> 1)
-        Y = int(self.screenUpper[1])
-        W = int(self.screenUpper[2] * self.screenSize.width()) >> 1
-        H = int(self.screenUpper[3] * self.screenSize.height()) 
-        self.setGeometry(X, Y, W, H)
-    
-    def setScreenToLeftHalf(self):
-        # get latest arguments from settingFile
-        self.getEachLineInSettingFile()
-        
-        # try to update arguments from settingFile
-        for line in self.eachLineInSettingFile:
-            if line.startswith('screenUpper'):
-                s = line.split(',')[1:]
-                for i in range(4):
-                    self.screenUpper[i] = float(s[i])
-        
-        X = int(self.screenUpper[0])
-        Y = int(self.screenUpper[1])
-        W = int(self.screenUpper[2] * self.screenSize.width()) >> 1
-        H = int(self.screenUpper[3] * self.screenSize.height()) 
-        self.setGeometry(X, Y, W, H)
         
     def setIcon(self):
         # default iconPath
@@ -221,9 +151,6 @@ class QMain(QWidget):
     
     def getTheQLine(self, index):
         return self.QLineList[index]
-        
-    def getNumOfQButton(self):    
-        return self.numOfQButton
         
     def showTheQText(self, index):
         self.QTextList[index].show()
@@ -487,22 +414,6 @@ class QText(QPlainTextEdit):
                 self.setLineWrapMode(QPlainTextEdit.NoWrap if self.wrapMode else QPlainTextEdit.WidgetWidth)
                 self.wrapMode = not self.wrapMode
                 
-            # set Screen To UpperHalf 
-            elif event.key() == Qt.Key_Up:
-                self.parent.setScreenToUpperHalf()       
-                
-            # set Screen To LowerHalf 
-            elif event.key() == Qt.Key_Down:
-                self.parent.setScreenToLowerHalf() 
-            
-            # set Screen To RightHalf 
-            elif event.key() == Qt.Key_Right:
-                self.parent.setScreenToRightHalf()
-            
-            # set Screen To LeftHalf 
-            elif event.key() == Qt.Key_Left:
-                self.parent.setScreenToLeftHalf()
-                
             # save file
             elif event.key() == Qt.Key_S:
                 if not self.filePath or self.filePath == 'QText':
@@ -565,7 +476,7 @@ class QText(QPlainTextEdit):
                 else:
                     QPlainTextEdit.keyPressEvent(self, event)
                     
-            # open the file 
+            # get filePath in current line and open the file 
             elif event.key() == Qt.Key_F10:
                 cursor = self.textCursor()
                 cursor.select(QTextCursor.LineUnderCursor)
@@ -663,7 +574,7 @@ class QText(QPlainTextEdit):
             if line.rstrip().endswith(':'):
                 self.insertPlainText('    ')
                     
-        # find next pattern (this have to put after function of alt + F3)
+        # find next pattern (this action should put after alt + F3)
         elif event.key() == Qt.Key_F3:
             if self.pattern:
                 self.find(self.pattern)
@@ -718,7 +629,6 @@ class QHighlighter(QSyntaxHighlighter):
         rules += [(r'\bdef\b\s*(\w+)'  , 1, self.STYLES['defclass'])]
         rules += [(r'\bself\b'         , 0, self.STYLES['defclass'])]
         rules += [(r'#[^\n\'\"]*'      , 0, self.STYLES['comment' ])]
-        rules += [(r'[^:]//[^\n\'\"]*' , 0, self.STYLES['comment' ])]
         rules += [(r'[^:]//[^\n\'\"]*' , 0, self.STYLES['comment' ])]
         rules += [(r'"[^"\\]*(\\.[^"\\]*)*"', 0, self.STYLES['string'])]
         rules += [(r"'[^'\\]*(\\.[^'\\]*)*'", 0, self.STYLES['string'])]
