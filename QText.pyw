@@ -342,15 +342,17 @@ class QText(QPlainTextEdit):
             self.moveCursor(QTextCursor.Up)
             self.moveCursor(QTextCursor.EndOfLine)
                 
-        # open website by chrome
+        # open the file or website by chrome
         elif event.key() == Qt.Key_F4:
             cursor = self.textCursor()
             cursor.select(QTextCursor.LineUnderCursor)
             underPath = cursor.selectedText()
             underPathExtension = os.path.splitext(underPath)[1].lower()
+            Chrome = r'C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe '
             SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md'])
-            if underPath.startswith('http') or underPathExtension in SupportExtension:
-                Chrome = r'C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe '
+            if os.path.exists(underPath) and underPathExtension in SupportExtension:
+                os.popen('"%s" "%s"'%(Chrome, underPath))
+            elif underPath.startswith('http'):
                 os.popen('"%s" "%s"'%(Chrome, underPath))
                         
         # execute python script
@@ -474,16 +476,17 @@ class QText(QPlainTextEdit):
                 else:
                     QPlainTextEdit.keyPressEvent(self, event)
                     
-            # get filePath in current line and open the file 
+            # open the file or directory
             elif event.key() == Qt.Key_F10:
                 cursor = self.textCursor()
                 cursor.select(QTextCursor.LineUnderCursor)
                 underPath = cursor.selectedText()
                 underPathExtension = os.path.splitext(underPath)[1].lower()
                 SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md'])
-                if underPathExtension in SupportExtension:
-                    if os.path.exists(underPath):
-                        os.startfile(underPath)
+                if os.path.isfile(underPath) and underPathExtension in SupportExtension:
+                    os.startfile(underPath)
+                elif os.path.isdir(underPath):
+                    os.startfile(underPath)
             else:
                 QPlainTextEdit.keyPressEvent(self, event)
             
