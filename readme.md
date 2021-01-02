@@ -1,9 +1,9 @@
 # 程式用途  
 自製的簡易編輯器，用來取代記事本 & 撰寫 Python 腳本。  
-&emsp;
+&emsp;  
 # 開發環境  
-Win10(64bit) + Python 3.8.5 + PyQt5 
-&emsp;
+Win10(64bit) + Python 3.8.5 + PyQt5  
+&emsp;  
 # 架構簡述  
 總共有六個類別(QMain、QButton、QLine、QText、QGridLayout、QHighlighter)  
 QMain 為主程式的視窗，也是其餘五個類別的 Parent  
@@ -59,4 +59,4 @@ pip install pygame-1.9.6-cp38-cp38-win_amd64.whl
 &emsp;  
 # 按F10開啟設定檔並設定按鈕  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO_03.PNG?raw=true)  
-&emsp;   
+&emsp;  
