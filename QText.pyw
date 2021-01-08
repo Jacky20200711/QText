@@ -8,11 +8,11 @@ class QMain(QWidget):
         super(QWidget, self).__init__()
         self.settingFile = os.path.split(sys.argv[0])[0] + '\\SettingFile.txt'
         self.setWindowTitle('QText')
-        self.QLineList = None
-        self.QTextList = None
-        self.highlight = None
+        self.QLine = None
+        self.QText = None
+        self.QHighLighter = None
+        self.QLayout = None
         self.isFullScreen = False
-        self.layout = None
         self.screenSize = QApplication.desktop().screenGeometry()
         self.screenLower = [0.1, 0.1, 0.78, 0.8]
         self.screenUpper = [0, 45, 1, 0.917]
@@ -27,22 +27,22 @@ class QMain(QWidget):
             'screenUpper,0,45,1,0.917\n'+ \
            r'iconPath,D:\Desktop\Project\QText\QText.ico' + '\n'
         
-    def createQLines(self):
-        self.QLineList = [QLine(self,i) for i in range(1)]
+    def createQLine(self):
+        self.QLine = QLine(self)
         
-    def createQTexts(self):
-        self.QTextList = [QText(self,i) for i in range(1)]
+    def createQText(self):
+        self.QText = QText(self)
         
-    def createQHighlighterToAllQText(self):
-        self.highlight = [QHighlighter(QText.document()) for QText in self.QTextList]
+    def createQHighlighter(self):
+        self.QHighLighter = QHighlighter(self.QText.document())
         
-    def setLayoutOfUI(self):
-        self.layout = QGridLayout()
-        self.layout.addWidget(self.QLineList[0],0,0) # pos : row = 0 & col = 0
-        self.layout.addWidget(self.QTextList[0],0,1) # pos : row = 0 & col = 1
-        self.layout.setColumnStretch(0,1)
-        self.layout.setColumnStretch(1,16)
-        self.setLayout(self.layout)
+    def arrangeElement(self):
+        self.QLayout = QGridLayout()
+        self.QLayout.addWidget(self.QLine,0,0) # pos : row = 0 & col = 0
+        self.QLayout.addWidget(self.QText,0,1) # pos : row = 0 & col = 1
+        self.QLayout.setColumnStretch(0,1)
+        self.QLayout.setColumnStretch(1,16)
+        self.setLayout(self.QLayout)
         
     def setScreenSize(self):
         # check arguments in settingFile
@@ -56,7 +56,7 @@ class QMain(QWidget):
                 s = line.split(',')[1:]
                 for i in range(4):
                     self.screenUpper[i] = float(s[i])
-        
+        # resize the screen
         if self.isFullScreen:
             X = int(self.screenUpper[0])
             Y = int(self.screenUpper[1])
@@ -69,7 +69,7 @@ class QMain(QWidget):
             W = int(self.screenLower[2] * self.screenSize.width())
             H = int(self.screenLower[3] * self.screenSize.height())
             self.setGeometry(X, Y, W, H)
-            
+        # reverse the flag    
         self.isFullScreen = not self.isFullScreen
         
     def setIcon(self):
@@ -93,29 +93,11 @@ class QMain(QWidget):
                     content = file.read().decode('cp950', 'ignore').split('\n')
                     self.eachLineInSettingFile = content
         
-    def getAllQLine(self):
-        return self.QLineList
+    def getQText(self):
+        return self.QText
     
-    def getAllQText(self):
-        return self.QTextList
-        
-    def getTheQText(self, index):
-        return self.QTextList[index]
-    
-    def getTheQLine(self, index):
-        return self.QLineList[index]
-        
-    def showTheQText(self, index):
-        self.QTextList[index].show()
-        
-    def showTheQLine(self, index):
-        self.QLineList[index].show()
-        
-    def hideOtherQText(self, index):
-        [self.QTextList[i].hide() for i in range(1) if i != index]    
-        
-    def hideOtherQLine(self, index):
-        [self.QLineList[i].hide() for i in range(1) if i != index]
+    def getQLine(self):
+        return self.QLine
     
     def keyPressEvent(self, event):
         # set screenSize
@@ -129,7 +111,7 @@ class QMain(QWidget):
             os.startfile(self.settingFile)
                     
 class QLine(QPlainTextEdit):
-    def __init__(self, parent, index):
+    def __init__(self, parent):
         QPlainTextEdit.__init__(self, parent)
         self.verticalScrollBar().setEnabled(False)
         self.setFont(QFont('consolas', 14, 0, False))
@@ -163,10 +145,9 @@ class QLine(QPlainTextEdit):
         self.maxLineNumber = rightBound - 1
             
 class QText(QPlainTextEdit):
-    def __init__(self, parent, index):
+    def __init__(self, parent):
         QPlainTextEdit.__init__(self, parent)
         self.lineOfTheOpenFile = 0
-        self.index = index
         self.parent = parent
         self.clipboard = QApplication.clipboard()
         self.setFont(QFont('consolas', 14, 0, False))
@@ -183,7 +164,7 @@ class QText(QPlainTextEdit):
         )
         # synchronize verticalScrollBar to the QLine and the QText
         self.verticalScrollBar().valueChanged.connect(
-            self.parent.getTheQLine(self.index).verticalScrollBar().setValue
+            self.parent.getQLine().verticalScrollBar().setValue
         )
     
     def getFilePath(self):
@@ -383,7 +364,7 @@ class QText(QPlainTextEdit):
                 
             # extend line number
             elif event.key() == Qt.Key_L:
-                self.parent.getTheQLine(self.index).extendLineNumber()
+                self.parent.getQLine().extendLineNumber()
                 
             # find previous pattern
             elif event.key() == Qt.Key_F3:
@@ -468,7 +449,7 @@ class QText(QPlainTextEdit):
             QPlainTextEdit.keyPressEvent(self, event)
         
         # synchronize KeyEvent with QLine
-        self.parent.getTheQLine(self.index).verticalScrollBar().setValue(
+        self.parent.getQLine().verticalScrollBar().setValue(
             self.verticalScrollBar().value()
         )
 
@@ -571,21 +552,15 @@ class QHighlighter(QSyntaxHighlighter):
         return True if self.currentBlockState() == in_state else False
         
 if __name__ == '__main__' :
+    # create ui and set layout
     editorApp = QApplication(sys.argv)
     appWindow = QMain()
-    
-    # create ui and set layout 
-    appWindow.createQLines()
-    appWindow.createQTexts()
-    appWindow.setLayoutOfUI()
-    
-    # set focus to first QText
-    # create Highlighter for all QText
-    appWindow.getTheQText(0).setFocus()
-    appWindow.createQHighlighterToAllQText()
-    
+    appWindow.createQLine()
+    appWindow.createQText()
+    appWindow.createQHighlighter()
+    appWindow.arrangeElement()
+    appWindow.getQText().setFocus()
     # set lineNumber to first QLine
-    numOfline = appWindow.getTheQText(0).getLineOfTheOpenFile()
-    appWindow.getTheQLine(0).setLineNumber(numOfline)
-    
+    numOfline = appWindow.getQText().getLineOfTheOpenFile()
+    appWindow.getQLine().setLineNumber(numOfline)
     sys.exit(editorApp.exec_())
