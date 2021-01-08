@@ -8,12 +8,9 @@ class QMain(QWidget):
         super(QWidget, self).__init__()
         self.settingFile = os.path.split(sys.argv[0])[0] + '\\SettingFile.txt'
         self.setWindowTitle('QText')
-        self.numOfQButton = 6
-        self.QButtonList = None
         self.QLineList = None
         self.QTextList = None
         self.highlight = None
-        self.showAllQButton = True
         self.isFullScreen = False
         self.layout = None
         self.screenSize = QApplication.desktop().screenGeometry()
@@ -26,42 +23,30 @@ class QMain(QWidget):
         self.setIcon()
         self.show()
         self.defaultContentOfSettingFile = \
-            'button,Unset,Unset\n'+ \
-            'button,Unset,Unset\n'+ \
-            'button,Unset,Unset\n'+ \
-            'button,Unset,Unset\n'+ \
-            'button,Unset,Unset\n'+ \
             'screenLower,0.1,0.1,0.78,0.8\n'+ \
             'screenUpper,0,45,1,0.917\n'+ \
-           r'iconPath,D:\Desktop\Project\QText\QText.ico'+'\n'
-        
-    def createQButtons(self):
-        self.QButtonList = [QButton(self,i) for i in range(self.numOfQButton)]
+           r'iconPath,D:\Desktop\Project\QText\QText.ico' + '\n'
         
     def createQLines(self):
-        self.QLineList = [QLine(self,i) for i in range(self.numOfQButton)]
+        self.QLineList = [QLine(self,i) for i in range(1)]
         
     def createQTexts(self):
-        self.QTextList = [QText(self,i) for i in range(self.numOfQButton)]
+        self.QTextList = [QText(self,i) for i in range(1)]
         
     def createQHighlighterToAllQText(self):
         self.highlight = [QHighlighter(QText.document()) for QText in self.QTextList]
         
     def setLayoutOfUI(self):
         self.layout = QGridLayout()
+        self.layout.addWidget(self.QLineList[0],0,0) # pos : row = 0 & col = 0
+        self.layout.addWidget(self.QTextList[0],0,1) # pos : row = 0 & col = 1
         self.layout.setColumnStretch(0,1)
-        [self.layout.addWidget(btn,0,i+1) for i,btn in enumerate(self.QButtonList)]
-        [self.layout.setColumnStretch(i,10) for i in range(1, self.numOfQButton+1)]
-        [self.layout.addWidget(self.QLineList[i],1,0,1,1) for i in range(self.numOfQButton)]
-        [self.layout.addWidget(self.QTextList[i],1,1,1,6) for i in range(self.numOfQButton)]
-        [btn.hide() for btn in self.QButtonList]
+        self.layout.setColumnStretch(1,16)
         self.setLayout(self.layout)
         
     def setScreenSize(self):
-        # get latest arguments from settingFile
+        # check arguments in settingFile
         self.getEachLineInSettingFile()
-        
-        # try to update arguments from settingFile
         for line in self.eachLineInSettingFile:
             if line.startswith('screenLower'):
                 s = line.split(',')[1:]
@@ -90,39 +75,12 @@ class QMain(QWidget):
     def setIcon(self):
         # default iconPath
         iconPath = r'D:\Desktop\Project\QText\QText.ico'   
-        
-        # try to update arguments from settingFile
+        # check path in SettingFile
         for line in self.eachLineInSettingFile:
             if line.startswith('iconPath'):
                 iconPath = line.split(',')[1]
-                
         # set icon
         self.setWindowIcon(QIcon(iconPath))
-        
-    def setNameAndPathToAllQButton(self):
-        # set QButton of the index = 0
-        firstQTextFilePath = self.QTextList[0].getFilePath()
-        self.QButtonList[0].setPath(firstQTextFilePath if firstQTextFilePath else 'QText')
-            
-        # get latest arguments from settingFile
-        self.getEachLineInSettingFile()
-        
-        # set QButton from index = 1
-        index = 1
-        for line in self.eachLineInSettingFile:
-            if line.startswith('button'):
-                btnSettingData = line.split(',')
-                # set filePath and name to each button if path is valid
-                if os.path.isfile(btnSettingData[2]):
-                    self.QButtonList[index].setName(btnSettingData[1])
-                    self.QButtonList[index].setPath(btnSettingData[2])
-                else:
-                    self.QButtonList[index].setName('Unset')
-                    self.QButtonList[index].setPath('Unset')
-                index += 1
-            # support at most 5 QButton 
-            if index == 6:
-                break
                 
     def getEachLineInSettingFile(self):
         if os.path.isfile(self.settingFile):
@@ -140,9 +98,6 @@ class QMain(QWidget):
     
     def getAllQText(self):
         return self.QTextList
-    
-    def getAllQButton(self):
-        return self.QButtonList
         
     def getTheQText(self, index):
         return self.QTextList[index]
@@ -157,106 +112,21 @@ class QMain(QWidget):
         self.QLineList[index].show()
         
     def hideOtherQText(self, index):
-        [self.QTextList[i].hide() for i in range(self.numOfQButton) if i != index]    
+        [self.QTextList[i].hide() for i in range(1) if i != index]    
         
     def hideOtherQLine(self, index):
-        [self.QLineList[i].hide() for i in range(self.numOfQButton) if i != index]
+        [self.QLineList[i].hide() for i in range(1) if i != index]
     
     def keyPressEvent(self, event):
         # set screenSize
         if event.key() == Qt.Key_F2:
             self.setScreenSize()
-            
-        # show or hide all QButton
-        elif event.key() == Qt.Key_F1:
-            if self.showAllQButton:
-                [b.show() for b in self.QButtonList]
-            else:
-                [b.hide() for b in self.QButtonList]
-            self.showAllQButton = not self.showAllQButton
-            
         # open the settingFile
         elif event.key() == Qt.Key_F10:
             if not os.path.isfile(self.settingFile):
                 with open(self.settingFile, 'w+') as file:
                     file.write(self.defaultContentOfSettingFile)
             os.startfile(self.settingFile)
-                
-class QButton(QPushButton):
-    def __init__(self, parent, index):
-        QPushButton.__init__(self, parent)
-        self.isEmptyQText = True    # avoid reload content of the file
-        self.parent = parent
-        self.index = index
-        self.name = ''
-        self.filePath = ''
-        self.setName('QText' if index == 0 else 'Unset')
-        self.setPath('QText' if index == 0 else 'Unset')
-        self.setCursor(QCursor(Qt.PointingHandCursor))
-        self.setFont(QFont('Consolas', 14, 0, False))
-        self.setStyleSheet((
-            'border:5px outset blue;'
-            'background-color: blue;'
-            'color: #FFFF0A;'
-        ))
-        
-    def getPath(self):    
-        return self.filePath
-        
-    def setPath(self, filePath):
-        self.filePath = filePath
-    
-    def getName(self):    
-        return self.name
-        
-    def setName(self, name):
-        self.name = name
-        self.setText(name)
-    
-    def mousePressEvent(self, event):
-        # get the latest setting of all QButton
-        self.parent.setNameAndPathToAllQButton()
-        
-        # check whether the btn has path-setting 
-        if self.filePath == 'Unset':
-            QMessageBox.warning(
-                self.parent, 
-                'Hint', 
-                'Please press F10 to set this button.'
-            )
-            return
-            
-        # hide QLine and QText of other index
-        self.parent.hideOtherQLine(self.index)
-        self.parent.hideOtherQText(self.index)
-        
-        # show QLine and QText of the index
-        self.parent.showTheQLine(self.index)
-        self.parent.showTheQText(self.index)
-        
-        # set filePath of the QText
-        # set focus on the QText
-        # set WindowTitle 
-        self.parent.getTheQText(self.index).setFilePath(self.getPath())
-        self.parent.getTheQText(self.index).setFocus()
-        self.parent.setWindowTitle(self.filePath)
-        
-        # set lineNumber of the QLine
-        line = self.parent.getTheQText(self.index).getLineOfTheOpenFile()
-        self.parent.QLineList[self.index].setLineNumber(line)
-        
-        # update content of the QText (if this is the default QText, ignore it)
-        if self.index != 0 and self.isEmptyQText and os.path.isfile(self.filePath):
-            try:
-                with open(self.filePath, 'r', encoding='utf-8') as file:
-                    content = file.read().replace('\t', '    ')
-                    self.parent.getTheQText(self.index).setPlainText(content)
-                    self.isEmptyQText = False
-            except:
-                with open(self.filePath, 'rb') as file:
-                    content = file.read().decode('cp950', 'ignore')
-                    self.parent.getTheQText(self.index).setPlainText(content)
-                    self.isEmptyQText = False
                     
 class QLine(QPlainTextEdit):
     def __init__(self, parent, index):
@@ -704,25 +574,18 @@ if __name__ == '__main__' :
     editorApp = QApplication(sys.argv)
     appWindow = QMain()
     
-    # create UI and set layout 
-    appWindow.createQButtons()
+    # create ui and set layout 
     appWindow.createQLines()
     appWindow.createQTexts()
     appWindow.setLayoutOfUI()
     
-    # set data to all QButton
-    # set focus to QText which index = 0
+    # set focus to first QText
     # create Highlighter for all QText
-    appWindow.setNameAndPathToAllQButton()
     appWindow.getTheQText(0).setFocus()
     appWindow.createQHighlighterToAllQText()
     
     # set lineNumber to first QLine
     numOfline = appWindow.getTheQText(0).getLineOfTheOpenFile()
     appWindow.getTheQLine(0).setLineNumber(numOfline)
-        
-    # Just show default UI which index = 0
-    appWindow.hideOtherQLine(0)
-    appWindow.hideOtherQText(0)
     
     sys.exit(editorApp.exec_())
