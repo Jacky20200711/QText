@@ -10,7 +10,7 @@ class QMain(QWidget):
         self.setWindowTitle('QText')
         self.QLine = None
         self.QText = None
-        self.QHighLighter = None
+        self.QHighlighter = None
         self.QLayout = None
         self.isFullScreen = False
         self.screenSize = QApplication.desktop().screenGeometry()
@@ -34,7 +34,7 @@ class QMain(QWidget):
         self.QText = QText(self)
         
     def createQHighlighter(self):
-        self.QHighLighter = QHighlighter(self.QText.document())
+        self.QHighlighter = QHighlighter(self.QText.document())
         
     def arrangeElement(self):
         self.QLayout = QGridLayout()
