@@ -2,14 +2,14 @@
 自製的簡易編輯器，用來取代記事本 & 撰寫 Python 腳本。  
 &emsp;  
 # 開發環境  
-Win10(64bit) + Python 3.8.5 + PyQt5  
+Win10(64bit) + Python 3.9.1 + PyQt5  
 &emsp;  
 # 架構簡述  
 主要有四個類別(QMain、QLine、QText、QHighlighter)  
-QMain 為主程式的視窗，也是其餘類別的 Parent  
+QMain 為程式的主視窗，也是其餘類別的 Parent  
 QLine 用來顯示行數  
 QText 用來編輯文本  
-QHighlighter 用來令編輯的內容產生語法高亮  
+QHighlighter 用來令文本內容產生語法高亮  
 &emsp;  
 # 功能說明  
 1.遇到 Python 的 "Keyword" 和 "Operator" 會產生語法高亮  
@@ -37,19 +37,12 @@ Tab + shift : 將 "被選取到的那幾行" 做反縮排
 Esc : 刪除游標所在的那一行，並將游標定位到上一行的尾端  
 &emsp;  
 # 架設環境的步驟 & 此程式的執行方法  
-1.下載並安裝 Python3.8.5 (此版本有內建pip)  
+1.下載並安裝 Python 3.9.1 (此版本有內建pip)  
 &emsp;  
-2.打開命令列，使用以下指令安裝各個套件  
+2.打開命令列，輸入下列指令來安裝 PyQt5  
 pip install PyQt5  
-pip install sip  
 &emsp;  
-3.到以下網址下載"pygame-1.9.6-cp38-cp38-win_amd64.whl"  
-http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame  
-&emsp;  
-4.將命令列的路徑切換到該whl檔案所在的資料夾，然後輸入以下指令  
-pip install pygame-1.9.6-cp38-cp38-win_amd64.whl  
-&emsp;  
-5.架設好環境後，雙擊 QText.pyw  
+3.架設好環境後，雙擊 QText.pyw  
 &emsp;  
 # 編輯TXT檔  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO_01.PNG?raw=true)  
