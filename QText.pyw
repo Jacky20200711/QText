@@ -437,8 +437,9 @@ class QText(QPlainTextEdit):
             # make cursor align to first char of previous line
             space = len(line) - len(line.lstrip())
             [self.insertPlainText(' ') for i in range(space)]
-            # make Python-Programming more easily
-            if line.rstrip().endswith(':'):
+            # auto indent for programmer
+            line = line.rstrip()
+            if line.endswith(':') or line.endswith('{'):
                 self.insertPlainText('    ')
                     
         # find next pattern (this action should put after alt + F3)
