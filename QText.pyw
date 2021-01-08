@@ -127,10 +127,10 @@ class QLine(QPlainTextEdit):
     def setLineNumber(self, lineOfTheOpenFile=0):
         self.maxLineNumber = lineOfTheOpenFile + 2000
         [self.insertPlainText('%5d\n'%i) for i in range(1, self.maxLineNumber+1)]
-        [self.moveCursor(QTextCursor.Start)]
+        self.moveCursor(QTextCursor.Start)
     
     def extendLineNumber(self):
-        [self.moveCursor(QTextCursor.End)]
+        self.moveCursor(QTextCursor.End)
         starLineNumber = self.maxLineNumber + 1
         numOfNewLine = 5000
         rightBound = starLineNumber + numOfNewLine
@@ -457,9 +457,8 @@ class QHighlighter(QSyntaxHighlighter):
         }
         
         self.operators = [
-            '='  , '==', '!=' , '<' , '<=', '>' , 
+            '='  , '==', '!=' , '<' , '<=', '>' , '\^' , '\|', '\&',
             '\+' , '-' , '\*' , '\%', '/' , '>=', 
-            '\^' , '\|', '\&'
         ]
         
         self.tri_single = (QRegExp('\'\'\''), 1, self.STYLES['string'])
@@ -551,7 +550,7 @@ if __name__ == '__main__' :
     appWindow.createQHighlighter()
     appWindow.arrangeElement()
     appWindow.getQText().setFocus()
-    # set lineNumber to first QLine
+    # set line Number to QLine
     numOfline = appWindow.getQText().getLineOfTheOpenFile()
     appWindow.getQLine().setLineNumber(numOfline)
     sys.exit(editorApp.exec_())
