@@ -36,18 +36,9 @@ Tab : 插入4個空白字元 or 將 "被選取到的那幾行" 做縮排
 Tab + shift : 將 "被選取到的那幾行" 做反縮排  
 Esc : 刪除游標所在的那一行，並將游標定位到上一行的尾端  
 &emsp;  
-# 架設環境的步驟 & 此程式的執行方法  
-1.下載並安裝 Python 3.9.1 (此版本有內建pip)  
-&emsp;  
-2.打開命令列，輸入下列指令來安裝 PyQt5  
-pip install PyQt5  
-&emsp;  
-3.架設好環境後，雙擊 QText.pyw  
-&emsp;  
-# 編輯TXT檔  
+# 編輯文本  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO_01.PNG?raw=true)  
 &emsp;  
-# 執行PY檔  
+# 執行腳本  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO_02.PNG?raw=true)  
 &emsp;  
-
