@@ -1,4 +1,4 @@
-import os, sys, webbrowser
+import os, sys, webbrowser, linecache
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -234,14 +234,16 @@ class QButton(QPushButton):
         self.parent.showTheQLine(self.index)
         self.parent.showTheQText(self.index)
         
-        # set lineNumber of the QLine
         # set filePath of the QText
         # set focus on the QText
         # set WindowTitle 
-        self.parent.QLineList[self.index].setLineNumber()
         self.parent.getTheQText(self.index).setFilePath(self.getPath())
         self.parent.getTheQText(self.index).setFocus()
         self.parent.setWindowTitle(self.filePath)
+        
+        # set lineNumber of the QLine
+        line = self.parent.getTheQText(self.index).getLineOfTheOpenFile()
+        self.parent.QLineList[self.index].setLineNumber(line)
         
         # update content of the QText (if this is the default QText, ignore it)
         if self.index != 0 and self.isEmptyQText and os.path.isfile(self.filePath):
@@ -262,7 +264,7 @@ class QLine(QPlainTextEdit):
         self.verticalScrollBar().setEnabled(False)
         self.setFont(QFont('consolas', 14, 0, False))
         self.setReadOnly(True)
-        self.maxLineNumber = 3000
+        self.maxLineNumber = 2000
         self.hasSetLineNumber = False
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setStyleSheet((
@@ -272,10 +274,12 @@ class QLine(QPlainTextEdit):
         )
     
     # The speed of open this app would be slow if you set all QLine at first
-    # Just set the first QLine when app start and set other QLine when other QButton is clicked
-    def setLineNumber(self):
+    # Just set the first QLine when app start 
+    # Other QLine would be set when QButton is clicked
+    def setLineNumber(self, lineOfTheOpenFile=0):
         if not self.hasSetLineNumber:
             self.hasSetLineNumber = True
+            self.maxLineNumber = lineOfTheOpenFile + 2000
             # set line_number and then move cursor to first line
             [self.insertPlainText('%5d\n'%i) for i in range(1, self.maxLineNumber+1)]
             [self.moveCursor(QTextCursor.Start)]
@@ -283,14 +287,15 @@ class QLine(QPlainTextEdit):
     def extendLineNumber(self):
         [self.moveCursor(QTextCursor.End)]
         starLineNumber = self.maxLineNumber + 1
-        number_addNewLine = 3000
-        rightBound = starLineNumber + number_addNewLine
+        numOfNewLine = 5000
+        rightBound = starLineNumber + numOfNewLine
         [self.insertPlainText('%5d\n'%i) for i in range(starLineNumber, rightBound)]
         self.maxLineNumber = rightBound - 1
             
 class QText(QPlainTextEdit):
     def __init__(self, parent, index):
         QPlainTextEdit.__init__(self, parent)
+        self.lineOfTheOpenFile = 0
         self.index = index
         self.parent = parent
         self.clipboard = QApplication.clipboard()
@@ -316,6 +321,9 @@ class QText(QPlainTextEdit):
     
     def setFilePath(self, filePath):
         self.filePath = filePath
+    
+    def getLineOfTheOpenFile(self):
+        return self.lineOfTheOpenFile
         
     def openFile(self):
         if len(sys.argv) > 1:
@@ -327,9 +335,16 @@ class QText(QPlainTextEdit):
                 except:
                     with open(filePath, 'rb+') as file:
                         self.setPlainText(file.read().decode('cp950', 'ignore'))
+                        
                 # set filePath and WindowTitle after open_success
                 self.filePath = filePath              
                 self.parent.setWindowTitle(filePath)
+                
+                # Get line number of the file
+                try:
+                    self.lineOfTheOpenFile += len(linecache.getlines(filePath))
+                except:
+                    pass
                 
     def keyPressEvent(self, event):
         # del a line and set cursor to end of last line
@@ -696,14 +711,16 @@ if __name__ == '__main__' :
     appWindow.setLayoutOfUI()
     
     # set data to all QButton
-    # set line number to QLine which index = 0
     # set focus to QText which index = 0
     # create Highlighter for all QText
     appWindow.setNameAndPathToAllQButton()
-    appWindow.getTheQLine(0).setLineNumber()
     appWindow.getTheQText(0).setFocus()
     appWindow.createQHighlighterToAllQText()
     
+    # set lineNumber to first QLine
+    numOfline = appWindow.getTheQText(0).getLineOfTheOpenFile()
+    appWindow.getTheQLine(0).setLineNumber(numOfline)
+        
     # Just show default UI which index = 0
     appWindow.hideOtherQLine(0)
     appWindow.hideOtherQText(0)
