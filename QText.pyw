@@ -117,7 +117,6 @@ class QLine(QPlainTextEdit):
         self.setFont(QFont('consolas', 14, 0, False))
         self.setReadOnly(True)
         self.maxLineNumber = 2000
-        self.hasSetLineNumber = False
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setStyleSheet((
             'color: #552a07;'
@@ -125,16 +124,10 @@ class QLine(QPlainTextEdit):
             'border:1px solid black;')
         )
     
-    # The speed of open this app would be slow if you set all QLine at first
-    # Just set the first QLine when app start 
-    # Other QLine would be set when QButton is clicked
     def setLineNumber(self, lineOfTheOpenFile=0):
-        if not self.hasSetLineNumber:
-            self.hasSetLineNumber = True
-            self.maxLineNumber = lineOfTheOpenFile + 2000
-            # set line_number and then move cursor to first line
-            [self.insertPlainText('%5d\n'%i) for i in range(1, self.maxLineNumber+1)]
-            [self.moveCursor(QTextCursor.Start)]
+        self.maxLineNumber = lineOfTheOpenFile + 2000
+        [self.insertPlainText('%5d\n'%i) for i in range(1, self.maxLineNumber+1)]
+        [self.moveCursor(QTextCursor.Start)]
     
     def extendLineNumber(self):
         [self.moveCursor(QTextCursor.End)]
@@ -166,12 +159,6 @@ class QText(QPlainTextEdit):
         self.verticalScrollBar().valueChanged.connect(
             self.parent.getQLine().verticalScrollBar().setValue
         )
-    
-    def getFilePath(self):
-        return self.filePath
-    
-    def setFilePath(self, filePath):
-        self.filePath = filePath
     
     def getLineOfTheOpenFile(self):
         return self.lineOfTheOpenFile
@@ -318,24 +305,23 @@ class QText(QPlainTextEdit):
                             'Can\'t find the string...'
                         )
                 
-            # copy the line
+            # copy the line to clipboard
             elif event.key() == Qt.Key_C:
                 cursor = self.textCursor()
                 if not cursor.hasSelection():
-                    # copy all line except front space_chars
                     cursor.select(QTextCursor.LineUnderCursor)
                     self.clipboard.setText(cursor.selectedText().strip())
                 else:
                     QPlainTextEdit.keyPressEvent(self, event)
                 
-            # cut the line
+            # copy the line to clipboard and then delete this line
             elif event.key() == Qt.Key_X:
                 cursor = self.textCursor()
                 if not cursor.hasSelection():
-                    # copy to clipboard
+                    # copy the line to clipboard
                     cursor.select(QTextCursor.LineUnderCursor)
                     self.clipboard.setText(cursor.selectedText().strip())
-                    # delete all chars in this line
+                    # delete this line
                     cursor.movePosition(QTextCursor.EndOfLine)
                     colNum = cursor.columnNumber() + 1
                     [cursor.deletePreviousChar() for i in range(colNum)]
@@ -417,11 +403,12 @@ class QText(QPlainTextEdit):
                 self.moveCursor(QTextCursor.PreviousCharacter)
                     
             elif event.key() == Qt.Key_Return:
+                # do the work as general key_Return
                 cursor = self.textCursor()
                 cursor.select(QTextCursor.LineUnderCursor)
                 line = cursor.selectedText()
                 self.insertPlainText('\n')
-                # make cursor align to first char of previous line
+                # make cursor align to previous line
                 space = len(line) - len(line.strip())
                 [self.insertPlainText(' ') for i in range(space)]
             else:
@@ -437,10 +424,13 @@ class QText(QPlainTextEdit):
             # make cursor align to first char of previous line
             space = len(line) - len(line.lstrip())
             [self.insertPlainText(' ') for i in range(space)]
-            # auto indent for programmer
+            # auto indent when last chr of previous line in the set
             line = line.rstrip()
-            if line.endswith(':') or line.endswith('{'):
-                self.insertPlainText('    ')
+            charSet = set([':','{','['])
+            for c in charSet:
+                if line.endswith(c):
+                    self.insertPlainText('    ')
+                    break
                     
         # find next pattern (this action should put after alt + F3)
         elif event.key() == Qt.Key_F3:
