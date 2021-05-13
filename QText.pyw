@@ -1,4 +1,4 @@
-import os, sys, webbrowser, linecache
+import os, sys, subprocess, linecache
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -195,23 +195,34 @@ class QText(QPlainTextEdit):
             self.moveCursor(QTextCursor.Up)
             self.moveCursor(QTextCursor.EndOfLine)
                 
-        # open the file or website by chrome
+        # open the file or url by chrome
         elif event.key() == Qt.Key_F4:
+            # get the path or url under the cursor
             cursor = self.textCursor()
             cursor.select(QTextCursor.LineUnderCursor)
             underPath = cursor.selectedText()
+            # detect the path of chrome
+            chromePath = r'C:/Program Files (x86)/Google/Chrome/Application/Chrome.exe'
+            if not os.path.exists(chromePath):
+                chromePath = r'C:/Program Files/Google/Chrome/Application/Chrome.exe'
+            # get the flag whether we can open it by chrome
             underPathExtension = os.path.splitext(underPath)[1].lower()
-            # consider two conditions of default path of chrome
-            Chrome = r'C:/Program Files (x86)/Google/Chrome/Application/Chrome.exe'
-            if not os.path.exists(Chrome):
-                Chrome = r'C:/Program Files/Google/Chrome/Application/Chrome.exe'
-            # open the file by chrome    
-            SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md', '.js'])
-            if os.path.exists(underPath) and underPathExtension in SupportExtension:
-                os.popen('"%s" "%s"'%(Chrome, underPath))
+            SupportedExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md', '.js'])
+            openThisByChrome = False
+            if os.path.exists(underPath) and underPathExtension in SupportedExtension:
+                openThisByChrome = True
             elif underPath.startswith('http'):
-                os.popen('"%s" "%s"'%(Chrome, underPath))
-                        
+                openThisByChrome = True
+            # check the flag whether we can open it by chrome            
+            if openThisByChrome:
+                command = '"%s" "%s"'%(chromePath, underPath)
+                result = subprocess.Popen(
+                    command, 
+                    shell=True, 
+                    stdin=subprocess.PIPE, 
+                    stdout=subprocess.PIPE, 
+                )
+            
         # execute python script
         elif event.key() == Qt.Key_F5:
             if os.path.splitext(self.filePath)[1].lower() in ['.pyw','.py']:
