@@ -114,7 +114,7 @@ class QLine(QPlainTextEdit):
     def __init__(self, parent):
         QPlainTextEdit.__init__(self, parent)
         self.verticalScrollBar().setEnabled(False)
-        self.setFont(QFont('consolas', 14, 0, False))
+        self.setFont(QFont('細明體', 14, 0, False))
         self.setReadOnly(True)
         self.maxLineNumber = 2000
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -143,7 +143,7 @@ class QText(QPlainTextEdit):
         self.lineOfTheOpenFile = 0
         self.parent = parent
         self.clipboard = QApplication.clipboard()
-        self.setFont(QFont('consolas', 14, 0, False))
+        self.setFont(QFont('細明體', 14, 0, False))
         self.setCursorWidth(3)
         self.filePath = ''            
         self.pattern = ''              # keep the string you want to find
