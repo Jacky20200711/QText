@@ -490,7 +490,7 @@ class QHighlighter(QSyntaxHighlighter):
             'as' ,
             'abs','min','max','bin','len','set','zip','del','str','ord','chr','int',
             'oct','hex','sum','map',
-            'open','list','dict','True','pass','type','None','sort',
+            'open','list','dict','True','pass','type','None','sort', 'exit',
             'False','print','input','super','range','float','bytes',
             'format', 'sys.exit','bytearray','enumerate'
         ]
