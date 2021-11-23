@@ -267,7 +267,7 @@ class QText(QPlainTextEdit):
                     cursor.select(QTextCursor.LineUnderCursor)
                     # get number that we can do step back
                     line_origin = cursor.selectedText()
-                    line_lstrip = line_origin.strip().strip('\t')
+                    line_lstrip = line_origin.lstrip().lstrip('\t')
                     # we can do at most 4 step back 
                     delNum = min(4, len(line_origin) - len(line_lstrip))
                     cursor.movePosition(QTextCursor.StartOfLine)
