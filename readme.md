@@ -36,7 +36,7 @@ Tab : 插入4個空白字元 or 將 "被選取到的那幾行" 做縮排
 Tab + shift : 將 "被選取到的那幾行" 做反縮排  
 Esc : 刪除游標所在的那一行，並將游標定位到上一行的尾端  
 &emsp;  
-# 編輯文本  
+# 撰寫筆記  
 ![image](https://github.com/Jacky20200711/QText/blob/master/DEMO_01.PNG?raw=true)  
 &emsp;  
 # 執行腳本  
