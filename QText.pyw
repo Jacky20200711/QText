@@ -195,12 +195,15 @@ class QText(QPlainTextEdit):
             self.moveCursor(QTextCursor.Up)
             self.moveCursor(QTextCursor.EndOfLine)
                 
-        # open the file or url by chrome
+        # open the dir, or open the file or url using chrome
         elif event.key() == Qt.Key_F4:
             # get the path or url under the cursor
             cursor = self.textCursor()
             cursor.select(QTextCursor.LineUnderCursor)
             underPath = cursor.selectedText()
+            # open the dir if path valid
+            if os.path.isdir(underPath):
+                os.startfile(underPath)
             # detect the path of chrome
             chromePath = r'C:/Program Files (x86)/Google/Chrome/Application/Chrome.exe'
             if not os.path.exists(chromePath):
@@ -343,7 +346,7 @@ class QText(QPlainTextEdit):
                 else:
                     QPlainTextEdit.keyPressEvent(self, event)
                     
-            # open the file or directory
+            # open the file by default editor
             elif event.key() == Qt.Key_F10:
                 cursor = self.textCursor()
                 cursor.select(QTextCursor.LineUnderCursor)
@@ -351,8 +354,6 @@ class QText(QPlainTextEdit):
                 underPathExtension = os.path.splitext(underPath)[1].lower()
                 SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md'])
                 if os.path.isfile(underPath) and underPathExtension in SupportExtension:
-                    os.startfile(underPath)
-                elif os.path.isdir(underPath):
                     os.startfile(underPath)
             else:
                 QPlainTextEdit.keyPressEvent(self, event)
