@@ -201,16 +201,17 @@ class QText(QPlainTextEdit):
             cursor = self.textCursor()
             cursor.select(QTextCursor.LineUnderCursor)
             underPath = cursor.selectedText()
-            # open the dir if path valid
+            # try to open the dir and then return
             if os.path.isdir(underPath):
                 os.startfile(underPath)
+                return
             # detect the path of chrome
             chromePath = r'C:/Program Files (x86)/Google/Chrome/Application/Chrome.exe'
             if not os.path.exists(chromePath):
                 chromePath = r'C:/Program Files/Google/Chrome/Application/Chrome.exe'
             # get the flag whether we can open it by chrome
             underPathExtension = os.path.splitext(underPath)[1].lower()
-            SupportedExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md', '.js'])
+            SupportedExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md', '.js', '.py', '.pyw'])
             openThisByChrome = False
             if os.path.exists(underPath) and underPathExtension in SupportedExtension:
                 openThisByChrome = True
