@@ -347,7 +347,7 @@ class QText(QPlainTextEdit):
                 else:
                     QPlainTextEdit.keyPressEvent(self, event)
                     
-            # open the file by default editor
+            # open the file by QText
             elif event.key() == Qt.Key_F10:
                 cursor = self.textCursor()
                 cursor.select(QTextCursor.LineUnderCursor)
@@ -355,7 +355,13 @@ class QText(QPlainTextEdit):
                 underPathExtension = os.path.splitext(underPath)[1].lower()
                 SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md'])
                 if os.path.isfile(underPath) and underPathExtension in SupportExtension:
-                    os.startfile(underPath)
+                    command = '"%s" "%s"'%(sys.argv[0], underPath)
+                    result = subprocess.Popen(
+                        command, 
+                        shell=True, 
+                        stdin=subprocess.PIPE, 
+                        stdout=subprocess.PIPE, 
+                    )
             else:
                 QPlainTextEdit.keyPressEvent(self, event)
             
