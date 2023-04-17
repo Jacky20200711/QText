@@ -293,9 +293,14 @@ class QText(QPlainTextEdit):
             # save file
             elif event.key() == Qt.Key_S:
                 if not self.filePath or self.filePath == 'QText':
+                    # 如果沒有D槽，則將預設的儲存路徑指到 C:\Users\ycgis\Desktop
+                    defaultPath = r'D:\Desktop'
+                    if not os.path.isdir('D:'):
+                        defaultPath = r'C:\Users\ycgis\Desktop'
+                    # 設定彈窗
                     self.filePath = QFileDialog.getSaveFileName(None, 
                         'Save File', 
-                        'D:\\Desktop',
+                        defaultPath,
                         '(*.txt);;(*.py);;(*.pyw)'
                     )[0].replace('/', '\\')
                     # make sure filePath cannot be empty
