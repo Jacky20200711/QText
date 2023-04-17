@@ -201,6 +201,10 @@ class QText(QPlainTextEdit):
             cursor = self.textCursor()
             cursor.select(QTextCursor.LineUnderCursor)
             underPath = cursor.selectedText()
+            # 如果沒有D槽，則將桌面指到 C:\Users\ycgis\Desktop
+            if not os.path.isdir('D:'):
+                underPath = underPath.lower()
+                underPath = underPath.replace(r'd:\desktop',r'C:\Users\ycgis\Desktop')
             # try to open the dir and then return
             if os.path.isdir(underPath):
                 os.startfile(underPath)
@@ -352,6 +356,11 @@ class QText(QPlainTextEdit):
                 cursor = self.textCursor()
                 cursor.select(QTextCursor.LineUnderCursor)
                 underPath = cursor.selectedText()
+                # 如果沒有D槽，則將桌面指到 C:\Users\ycgis\Desktop
+                if not os.path.isdir('D:'):
+                    underPath = underPath.lower()
+                    underPath = underPath.replace(r'd:\desktop',r'C:\Users\ycgis\Desktop')
+                # 提取副檔名
                 underPathExtension = os.path.splitext(underPath)[1].lower()
                 SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md'])
                 if os.path.isfile(underPath) and underPathExtension in SupportExtension:
