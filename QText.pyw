@@ -1,4 +1,4 @@
-import os, sys, subprocess, linecache
+import os, sys, subprocess, linecache, getpass
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -201,10 +201,10 @@ class QText(QPlainTextEdit):
             cursor = self.textCursor()
             cursor.select(QTextCursor.LineUnderCursor)
             underPath = cursor.selectedText()
-            # 如果沒有D槽，則將桌面指到 C:\Users\ycgis\Desktop
+            # 如果沒有D槽，則將桌面指到 C 槽某處
             if not os.path.isdir('D:'):
                 underPath = underPath.lower()
-                underPath = underPath.replace(r'd:\desktop',r'C:\Users\ycgis\Desktop')
+                underPath = underPath.replace(r'd:\desktop',r'C:\Users\JackyChen\Desktop')
             # try to open the dir and then return
             if os.path.isdir(underPath):
                 os.startfile(underPath)
@@ -213,6 +213,8 @@ class QText(QPlainTextEdit):
             chromePath = r'C:/Program Files (x86)/Google/Chrome/Application/Chrome.exe'
             if not os.path.exists(chromePath):
                 chromePath = r'C:/Program Files/Google/Chrome/Application/Chrome.exe'
+            if not os.path.exists(chromePath):
+                chromePath = r'C:/Users/%s/AppData/Local/Google/Chrome/Application/Chrome.exe'%(getpass.getuser())
             # get the flag whether we can open it by chrome
             underPathExtension = os.path.splitext(underPath)[1].lower()
             SupportedExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md', '.js', '.py', '.pyw'])
