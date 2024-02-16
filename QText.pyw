@@ -217,7 +217,7 @@ class QText(QPlainTextEdit):
                 chromePath = r'C:/Users/%s/AppData/Local/Google/Chrome/Application/Chrome.exe'%(getpass.getuser())
             # get the flag whether we can open it by chrome
             underPathExtension = os.path.splitext(underPath)[1].lower()
-            SupportedExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md', '.js', '.py', '.pyw'])
+            SupportedExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md', '.js', '.py', '.pyw', '.css'])
             openThisByChrome = False
             if os.path.exists(underPath) and underPathExtension in SupportedExtension:
                 openThisByChrome = True
@@ -369,7 +369,7 @@ class QText(QPlainTextEdit):
                     underPath = underPath.replace(r'd:\desktop',r'C:\Users\ycgis\Desktop')
                 # 提取副檔名
                 underPathExtension = os.path.splitext(underPath)[1].lower()
-                SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md'])
+                SupportExtension = set(['.cs', '.cshtml', '.html', '.txt', '.json', '.config', '.md', '.js', '.css'])
                 if os.path.isfile(underPath) and underPathExtension in SupportExtension:
                     command = '"%s" "%s"'%(sys.argv[0], underPath)
                     result = subprocess.Popen(
