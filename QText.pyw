@@ -14,7 +14,7 @@ class QMain(QWidget):
         self.QLayout = None
         self.isFullScreen = False
         self.screenSize = QApplication.desktop().screenGeometry()
-        self.screenLower = [0.1, 0.1, 0.78, 0.8]
+        self.screenLower = [0.12, 0.1, 0.78, 0.8]
         self.screenUpper = [0, 45, 1, 0.917]
         self.eachLineInSettingFile = []
         self.setAttribute(Qt.WA_DeleteOnClose)
@@ -23,7 +23,7 @@ class QMain(QWidget):
         self.setIcon()
         self.show()
         self.defaultContentOfSettingFile = \
-            'screenLower,0.1,0.1,0.78,0.8\n'+ \
+            'screenLower,0.12,0.1,0.78,0.8\n'+ \
             'screenUpper,0,45,1,0.917\n'+ \
            r'iconPath,D:\Desktop\Project\QText\QText.ico' + '\n'
         
